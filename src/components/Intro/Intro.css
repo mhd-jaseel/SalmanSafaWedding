@@ -1,0 +1,860 @@
+/* ==========================================================
+   Intro — cinematic stage / curtain overlay
+   All selectors are prefixed with .intro- to avoid clashes.
+   ========================================================== */
+
+.intro-root {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 40%, var(--emerald, #0f3d3e) 0%, var(--emerald-deep, #0a2a2b) 55%, #051617 100%);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.intro-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.intro-stage {
+  --ch: min(34vh, 64vw, 340px); /* character height */
+  --cw: calc(var(--ch) * 0.6); /* character width (viewBox 120x200) */
+  --lw: clamp(26px, 8.4vw, 44px); /* lantern width */
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--emerald-deep, #0a2a2b);
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.55);
+  animation: intro-fadein 0.7s ease both;
+  transform-origin: 50% 55%;
+}
+
+@supports (height: 100dvh) {
+  .intro-stage {
+    --ch: min(34dvh, 64vw, 340px);
+    height: 100dvh;
+  }
+}
+
+/* ---------------------------------------------------- back wall (reveal) */
+.intro-reveal {
+  position: absolute;
+  inset: 0 0 28% 0;
+  z-index: 1;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 45%, #1d5a55 0%, var(--emerald, #0f3d3e) 55%, var(--emerald-deep, #0a2a2b) 100%);
+}
+
+.intro-reveal-rays {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 150vmax;
+  height: 150vmax;
+  margin: -75vmax 0 0 -75vmax;
+  background: repeating-conic-gradient(from 0deg, rgba(233, 213, 166, 0.16) 0deg 5deg, transparent 5deg 15deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 38%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 38%);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.intro-reveal-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 58%, rgba(255, 236, 190, 0.5) 0%, rgba(233, 213, 166, 0.16) 45%, transparent 72%);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.intro-inner-arch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  transition: opacity 1.2s ease;
+}
+
+.intro-reveal.is-on .intro-reveal-rays {
+  opacity: 1;
+  animation: intro-spin 40s linear infinite;
+}
+.intro-reveal.is-on .intro-reveal-glow,
+.intro-reveal.is-on .intro-inner-arch {
+  opacity: 1;
+}
+
+.intro-title {
+  position: absolute;
+  top: 47%;
+  left: 9%;
+  right: 9%;
+  text-align: center;
+}
+
+.intro-title p {
+  margin: 0;
+  opacity: 0;
+  transform: translateY(18px) scale(0.94);
+  transition:
+    opacity 0.9s ease,
+    transform 1s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+
+.intro-title-names {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 0.2em;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(34px, 10.6vw, 58px);
+  line-height: 1.15;
+  color: #fbf0d6;
+  text-shadow:
+    0 0 18px rgba(212, 175, 106, 0.7),
+    0 2px 0 rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+}
+
+.intro-title-heart {
+  width: 0.48em;
+  height: 0.44em;
+  color: var(--rose, #c97b84);
+  animation: intro-beat 1.1s ease-in-out infinite;
+}
+
+.intro-title-sub {
+  margin-top: 0.4em !important;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3.7vw, 17px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-soft, #e9d5a6);
+}
+
+.intro-title-sub::before,
+.intro-title-sub::after {
+  content: '';
+  display: inline-block;
+  width: 1.8em;
+  height: 1px;
+  margin: 0 0.7em;
+  vertical-align: middle;
+  background: var(--gold, #d4af6a);
+  opacity: 0.8;
+}
+
+.intro-title-date {
+  margin-top: 0.5em !important;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(15px, 4.4vw, 20px);
+  color: var(--ivory, #fbf6ec);
+  opacity: 0.9;
+}
+
+.intro-reveal.is-on .intro-title p {
+  opacity: 1;
+  transform: none;
+}
+.intro-reveal.is-on .intro-title-names {
+  transition-delay: 0.35s;
+}
+.intro-reveal.is-on .intro-title-sub {
+  transition-delay: 0.85s;
+}
+.intro-reveal.is-on .intro-title-date {
+  transition-delay: 1.15s;
+}
+
+/* ---------------------------------------------------------- curtain */
+.intro-curtain {
+  position: absolute;
+  top: 0;
+  height: 72%;
+  width: 51%;
+  z-index: 2;
+  will-change: transform;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, transparent 20%, transparent 78%, rgba(0, 0, 0, 0.3) 100%),
+    repeating-linear-gradient(
+      90deg,
+      #470c1d 0%,
+      #6c1530 4%,
+      #972c4a 8%,
+      #b54862 10%,
+      #8b2442 12.5%,
+      #5b1227 16%,
+      #470c1d 18%
+    );
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+}
+.intro-curtain-l {
+  left: 0;
+}
+.intro-curtain-r {
+  right: 0;
+  background-position: 0 0, 9% 0;
+}
+
+/* gold trim on the meeting edge */
+.intro-curtain::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(90deg, #a87b31, #f3d999 50%, #a87b31);
+}
+.intro-curtain-l::before {
+  right: 0;
+}
+.intro-curtain-r::before {
+  left: 0;
+}
+
+/* gold band + fringe along the hem */
+.intro-curtain::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--ch) * -0.05);
+  height: calc(var(--ch) * 0.09);
+  background:
+    linear-gradient(180deg, #f3d999, #c79a4c) top / 100% 34% no-repeat,
+    repeating-linear-gradient(90deg, #e3c27c 0 2px, transparent 2px 5px) bottom / 100% 66% no-repeat;
+}
+
+/* ------------------------------------------------ proscenium + floor */
+.intro-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 72%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.intro-floor {
+  position: absolute;
+  top: 72%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-top: 2px solid var(--gold, #d4af6a);
+  background:
+    radial-gradient(ellipse 58% 42% at 50% 40%, rgba(233, 213, 166, 0.3), transparent 72%),
+    linear-gradient(180deg, #14504c 0%, #0c3434 45%, #061c1d 100%);
+  box-shadow: inset 0 12px 20px rgba(0, 0, 0, 0.4);
+}
+.intro-floor::before {
+  content: '';
+  position: absolute;
+  inset: 0 -40%;
+  background: repeating-linear-gradient(90deg, rgba(212, 175, 106, 0.2) 0 1px, transparent 1px 10%);
+  transform: perspective(240px) rotateX(50deg);
+  transform-origin: 50% 0;
+}
+.intro-floor::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(212, 175, 106, 0.12) 0 1px, transparent 1px 24%);
+}
+
+/* ---------------------------------------------------------- bokeh */
+.intro-bokeh {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.intro-bokeh i {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 238, 196, 0.95) 0%, rgba(212, 175, 106, 0.35) 45%, transparent 70%);
+  animation: intro-twinkle var(--t) ease-in-out var(--d) infinite;
+}
+
+/* -------------------------------------------------------- lanterns */
+.intro-lantern {
+  position: absolute;
+  top: 0;
+  z-index: 5;
+  width: var(--lw);
+  margin-left: calc(var(--lw) / -2);
+  transform-origin: 50% 0;
+  animation: intro-swing 3.4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.intro-lantern-string {
+  display: block;
+  width: 1.5px;
+  height: var(--len);
+  margin: 0 auto;
+  background: linear-gradient(180deg, rgba(212, 175, 106, 0.3), var(--gold, #d4af6a));
+}
+.intro-lantern-body {
+  position: relative;
+  display: block;
+  margin-top: -2px;
+}
+.intro-lantern-svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.intro-lantern-glow {
+  position: absolute;
+  left: -90%;
+  top: -30%;
+  width: 280%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 130, 0.5) 0%, rgba(255, 214, 130, 0.12) 38%, transparent 62%);
+  animation: intro-flicker 2.3s ease-in-out infinite alternate;
+}
+
+/* ------------------------------------------------------------ rope */
+.intro-rope {
+  --rw: calc(var(--ch) * 0.075);
+  position: absolute;
+  left: 90%;
+  top: -20%;
+  z-index: 6;
+  width: var(--rw);
+  margin-left: calc(var(--rw) / -2);
+  /* knot ends exactly where the groom's raised hand will be */
+  height: calc(115% - var(--ch) * 0.525);
+  pointer-events: none;
+}
+.intro-rope-cord {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  margin-left: -1.5px;
+  background: repeating-linear-gradient(-35deg, #f3d999 0 3px, #a77b33 3px 6px);
+  border-radius: 2px;
+}
+.intro-tassel {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: auto;
+  transform: translateY(-16.7%);
+  overflow: visible;
+}
+.intro-rope[data-tug='on'] {
+  animation: intro-rope-tug 1.3s ease-in-out forwards;
+}
+
+/* ------------------------------------------------------ characters */
+.intro-lane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5%;
+  height: var(--ch);
+  z-index: 7;
+  pointer-events: none;
+}
+
+.intro-char {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - var(--cw) / 2);
+  width: var(--cw);
+  height: var(--ch);
+  will-change: transform;
+}
+.intro-char-bride {
+  z-index: 2;
+  transform: translateX(-320%);
+}
+.intro-char-groom {
+  z-index: 1;
+  transform: translateX(320%);
+}
+
+.intro-shadow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -2.5%;
+  height: 6%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
+}
+
+.intro-lean,
+.intro-bob,
+.intro-dip {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+}
+.intro-lean {
+  transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+.intro-char-bride .intro-lean[data-lean='tilt'] {
+  transform: rotate(4deg);
+}
+.intro-char-bride .intro-lean[data-lean='hug'] {
+  transform: rotate(6deg);
+}
+.intro-char-groom .intro-lean[data-lean='tilt'] {
+  transform: rotate(-3deg);
+}
+.intro-char-groom .intro-lean[data-lean='hug'] {
+  transform: rotate(-6deg);
+}
+
+/* both sway together in the hug */
+.intro-dip[data-dip='sway'] {
+  animation: intro-hug-sway 1.6s ease-in-out 0.55s infinite;
+}
+@keyframes intro-hug-sway {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-1.6deg); }
+  70% { transform: rotate(1.6deg); }
+}
+
+.intro-bob.is-walking {
+  animation: intro-bob 0.9s ease-in-out infinite;
+}
+
+.intro-dip[data-dip='tug'] {
+  animation: intro-tug 1.3s ease-in-out forwards;
+}
+.intro-dip[data-dip='hop'] {
+  animation: intro-hop 0.75s ease-out 2;
+}
+.intro-char-bride .intro-dip[data-dip='hop'] {
+  animation-delay: 0.14s;
+}
+
+.intro-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.intro-name {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(24px, 7.5vw, 38px);
+  line-height: 1;
+  color: var(--gold-soft, #e9d5a6);
+  text-shadow: 0 0 12px rgba(212, 175, 106, 0.6);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 10px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+.intro-name.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* cheeks */
+.intro-cheeks {
+  opacity: 0.5;
+  transition: opacity 0.6s ease;
+}
+.intro-svg.is-blush .intro-cheeks {
+  opacity: 0.9;
+}
+
+/* limbs: pivot at the top-centre of each group */
+.intro-arm,
+.intro-leg,
+.intro-foot {
+  transform-box: fill-box;
+}
+.intro-arm {
+  transform-origin: 50% 6%;
+  transition: transform 0.55s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+.intro-leg {
+  transform-origin: 50% 0;
+}
+.intro-foot {
+  transform-origin: 50% 50%;
+}
+
+.intro-arm-l[data-a='rest'] { transform: rotate(8deg); }
+.intro-arm-r[data-a='rest'] { transform: rotate(-8deg); }
+.intro-arm-l[data-a='shy'] { transform: rotate(-24deg); }
+.intro-arm-r[data-a='shy'] { transform: rotate(24deg); }
+.intro-arm-l[data-a='hold'] { transform: rotate(55deg); }
+.intro-arm-r[data-a='hold'] { transform: rotate(-55deg); }
+.intro-arm-l[data-a='hug-out'] { transform: rotate(112deg); }
+.intro-arm-r[data-a='hug-out'] { transform: rotate(-112deg); }
+.intro-arm-l[data-a='hug-in'] { transform: rotate(-62deg); }
+.intro-arm-r[data-a='hug-in'] { transform: rotate(62deg); }
+/* hug: heads tilt together, real arms hide, drawn embrace arms appear */
+.intro-head {
+  transform-box: view-box;
+  transform-origin: 60px 112px;
+  transition: transform 0.5s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+.intro-svg-bride.is-hug .intro-head { transform: rotate(7deg); }
+.intro-svg-groom.is-hug .intro-head { transform: rotate(-7deg); }
+.intro-eyes-closed { opacity: 0; transition: opacity 0.15s ease; }
+.intro-svg.is-hug .intro-eyes-closed { opacity: 1; transition-delay: 0.35s; }
+.intro-eyes-open { transition: opacity 0.15s ease; }
+.intro-svg.is-hug .intro-eyes-open { opacity: 0; transition-delay: 0.35s; }
+.intro-svg.is-hug .intro-cheeks { opacity: 1; }
+.intro-hug-arms {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.intro-svg.is-hug .intro-hug-arms {
+  opacity: 1;
+  transition: opacity 0.25s ease 0.32s;
+}
+.intro-arm[data-a='hide'] {
+  opacity: 0;
+  transition: opacity 0.2s ease 0.3s, transform 0.55s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+/* old pose names kept for safety */
+.intro-arm-l[data-a='open'] { transform: rotate(64deg); }
+.intro-arm-r[data-a='open'] { transform: rotate(-64deg); }
+.intro-arm-r[data-a='hug-over'] { transform: rotate(-124deg); }  /* bride: over his shoulder */
+.intro-arm-l[data-a='hug-shy'] { transform: rotate(-34deg); }    /* bride: hand to her heart */
+.intro-arm-l[data-a='hug-back'] { transform: rotate(86deg); }    /* groom: around her back */
+.intro-arm-r[data-a='hug-hold'] { transform: rotate(46deg); }    /* groom: hand across, hugging her in */
+.intro-arm-l[data-a='reach'] { transform: rotate(150deg); }
+.intro-arm-r[data-a='reach'] { transform: rotate(-150deg); }
+
+.intro-svg.is-walking .intro-arm-l[data-a='swing'] {
+  animation: intro-arm-l-swing 0.9s ease-in-out infinite;
+}
+.intro-svg.is-walking .intro-arm-r[data-a='swing'] {
+  animation: intro-arm-r-swing 0.9s ease-in-out infinite;
+}
+.intro-arm-l[data-a='cheer'] {
+  animation: intro-arm-l-cheer 0.45s ease-in-out infinite alternate;
+}
+.intro-arm-r[data-a='cheer'] {
+  animation: intro-arm-r-cheer 0.45s ease-in-out infinite alternate;
+}
+
+.intro-svg.is-walking .intro-leg-l {
+  animation: intro-leg 0.9s ease-in-out infinite;
+}
+.intro-svg.is-walking .intro-leg-r {
+  animation: intro-leg 0.9s ease-in-out -0.45s infinite;
+}
+.intro-svg.is-walking .intro-foot-l {
+  animation: intro-foot 0.9s ease-in-out infinite;
+}
+.intro-svg.is-walking .intro-foot-r {
+  animation: intro-foot 0.9s ease-in-out -0.45s infinite;
+}
+
+/* ---------------------------------------------------------- hearts */
+.intro-hearts,
+.intro-pop {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.intro-hearts {
+  bottom: 62%;
+}
+.intro-heart {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--ch) * var(--sz));
+  opacity: 0;
+  animation-name: intro-heart;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+  animation-fill-mode: forwards;
+}
+.intro-heart svg,
+.intro-pop svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.intro-pop {
+  bottom: 96%;
+  width: calc(var(--ch) * 0.11);
+  height: auto;
+  margin-left: calc(var(--ch) * -0.055);
+  color: var(--rose, #c97b84);
+  animation: intro-pop 1.1s cubic-bezier(0.3, 1.6, 0.5, 1) forwards;
+}
+
+/* -------------------------------------------------------- bismillah */
+.intro-bismillah {
+  position: absolute;
+  top: calc(2.4% + env(safe-area-inset-top, 0px));
+  left: 8%;
+  right: 8%;
+  z-index: 8;
+  margin: 0;
+  text-align: center;
+  font-family: 'Amiri', 'Times New Roman', serif;
+  font-size: clamp(20px, 6.4vw, 34px);
+  line-height: 1.6;
+  color: var(--gold, #d4af6a);
+  text-shadow: 0 0 14px rgba(212, 175, 106, 0.55);
+  opacity: 0;
+  animation: intro-rise-in 1.6s ease 0.35s forwards;
+}
+
+/* ---------------------------------------------------- golden shower */
+.intro-shower {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  overflow: hidden;
+  pointer-events: none;
+}
+.intro-shower i {
+  position: absolute;
+  top: -4%;
+  aspect-ratio: 1 / 1.4;
+  opacity: 0;
+  animation-name: intro-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* ------------------------------------------------------------- skip */
+.intro-skip {
+  position: absolute;
+  z-index: 3;
+  /* sits just left of the music toggle (48px, bottom-right) */
+  right: calc(16px + 48px + 10px + env(safe-area-inset-right, 0px));
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  padding: 8px 16px;
+  border: 1px solid rgba(233, 213, 166, 0.5);
+  border-radius: 999px;
+  background: rgba(10, 42, 43, 0.6);
+  color: var(--ivory, #fbf6ec);
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  animation: intro-fadein 0.6s ease 1s forwards;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+.intro-skip:hover,
+.intro-skip:focus-visible {
+  background: rgba(15, 61, 62, 0.85);
+  border-color: var(--gold, #d4af6a);
+  outline: none;
+}
+.intro-skip span {
+  margin-left: 2px;
+  font-size: 15px;
+}
+
+/* ------------------------------------------------------- keyframes */
+@keyframes intro-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes intro-rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes intro-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes intro-beat {
+  0%, 100% { transform: scale(1); }
+  30% { transform: scale(1.22); }
+  55% { transform: scale(0.96); }
+}
+@keyframes intro-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1); }
+}
+@keyframes intro-swing {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
+}
+@keyframes intro-flicker {
+  from { opacity: 0.65; }
+  to { opacity: 1; }
+}
+@keyframes intro-bob {
+  0% { transform: translateY(0) rotate(-1.6deg); }
+  25% { transform: translateY(-3.5%) rotate(0deg); }
+  50% { transform: translateY(0) rotate(1.6deg); }
+  75% { transform: translateY(-3.5%) rotate(0deg); }
+  100% { transform: translateY(0) rotate(-1.6deg); }
+}
+@keyframes intro-leg {
+  0%, 100% { transform: rotate(11deg); }
+  50% { transform: rotate(-11deg); }
+}
+@keyframes intro-foot {
+  0%, 100% { transform: translate(-2.5px, 0); }
+  25% { transform: translate(0, -2.5px); }
+  50% { transform: translate(2.5px, 0); }
+  75% { transform: translate(0, 0); }
+}
+@keyframes intro-arm-l-swing {
+  0%, 100% { transform: rotate(20deg); }
+  50% { transform: rotate(-10deg); }
+}
+@keyframes intro-arm-r-swing {
+  0%, 100% { transform: rotate(10deg); }
+  50% { transform: rotate(-20deg); }
+}
+@keyframes intro-arm-l-cheer {
+  from { transform: rotate(128deg); }
+  to { transform: rotate(152deg); }
+}
+@keyframes intro-arm-r-cheer {
+  from { transform: rotate(-128deg); }
+  to { transform: rotate(-152deg); }
+}
+/* Groom squashes from the feet while the rope moves by the same amount
+   his raised hand drops (hand sits 52.5% of --ch above the feet). */
+@keyframes intro-tug {
+  0% { transform: scale(1, 1); }
+  22% { transform: scale(1.04, 0.86); }
+  42% { transform: scale(1.01, 0.97); }
+  68% { transform: scale(1.04, 0.85); }
+  82% { transform: scale(1.03, 0.87); }
+  100% { transform: scale(1, 1); }
+}
+@keyframes intro-rope-tug {
+  0% { transform: translateY(0); }
+  22% { transform: translateY(calc(var(--ch) * 0.0735)); }
+  42% { transform: translateY(calc(var(--ch) * 0.0158)); }
+  68% { transform: translateY(calc(var(--ch) * 0.0788)); }
+  82% { transform: translateY(calc(var(--ch) * 0.0683)); }
+  100% { transform: translateY(0); }
+}
+@keyframes intro-hop {
+  0% { transform: none; }
+  15% { transform: scale(1.05, 0.93); }
+  45% { transform: translateY(-9%) scale(0.97, 1.04); }
+  75% { transform: translateY(0) scale(1.04, 0.95); }
+  100% { transform: none; }
+}
+@keyframes intro-heart {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.2) rotate(0deg); }
+  15% { opacity: 1; transform: translate(-50%, calc(var(--ch) * -0.05)) scale(1) rotate(0deg); }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--ch) * var(--dx)), calc(var(--ch) * var(--rise) * -1)) scale(0.85) rotate(var(--rot));
+  }
+}
+@keyframes intro-pop {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  35% { opacity: 1; transform: translateY(-20%) scale(1.15); }
+  60% { transform: translateY(-30%) scale(0.95); }
+  100% { opacity: 0; transform: translateY(-120%) scale(1); }
+}
+@keyframes intro-fall {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg); }
+  8% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--drift), 108vh, 0) rotate(var(--spin)); }
+}
+
+/* --------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .intro-bokeh i,
+  .intro-lantern,
+  .intro-lantern-glow,
+  .intro-title-heart,
+  .intro-reveal.is-on .intro-reveal-rays,
+  .intro-arm[data-a='cheer'] {
+    animation: none !important;
+  }
+  .intro-bismillah,
+  .intro-skip {
+    animation-duration: 0.3s;
+    animation-delay: 0s;
+  }
+}
+.intro-root.is-reduced .intro-title p,
+.intro-root.is-reduced .intro-arm,
+.intro-root.is-reduced .intro-lean {
+  transition-duration: 0.35s !important;
+  transition-delay: 0s !important;
+}
+
+/* ------------------------------------------------ embrace scene (HugCouple) */
+.intro-arm[data-a='none'] { display: none; }
+.intro-char { transition: opacity 0.22s ease; }
+.intro-lane.is-hugging .intro-char { opacity: 0; }
+.intro-hug {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - var(--cw) * 0.65); /* viewBox 156 wide vs 120 per character */
+  width: calc(var(--cw) * 1.3);
+  height: var(--ch);
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.intro-hug.is-on { opacity: 1; }
+.intro-hug-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 100%;
+}
+.intro-hug.is-on .intro-hug-svg {
+  animation:
+    intro-hug-squeeze 0.55s cubic-bezier(0.34, 1.5, 0.5, 1),
+    intro-hug-rock 1.9s ease-in-out 0.55s infinite;
+}
+@keyframes intro-hug-squeeze {
+  0% { transform: scale(0.93, 1.05); }
+  100% { transform: scale(1, 1); }
+}
+@keyframes intro-hug-rock {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-2deg); }
+  70% { transform: rotate(2deg); }
+}
+.intro-root.is-reduced .intro-hug-svg { animation: none; }

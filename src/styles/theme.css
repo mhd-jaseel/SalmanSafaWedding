@@ -1,0 +1,124 @@
+/* ============================================================
+   Global design tokens — Nikkah invitation
+   Imported once from main.jsx. Keep resets minimal.
+   ============================================================ */
+
+:root {
+  /* Palette */
+  --emerald: #0f3d3e;
+  --emerald-deep: #0a2a2b;
+  --emerald-soft: #1a5556;
+  --gold: #d4af6a;
+  --gold-soft: #e9d5a6;
+  --gold-deep: #b08d4a;
+  --ivory: #fbf6ec;
+  --ivory-deep: #f3ead8;
+  --blush: #e8b4b8;
+  --rose: #c97b84;
+  --ink: #1b1b1b;
+  --ink-soft: #4a4a45;
+  --muted: #7a7466;
+
+  /* Gradients */
+  --grad-gold: linear-gradient(135deg, #f3e2b8 0%, #d4af6a 45%, #b08d4a 100%);
+  --grad-emerald: radial-gradient(120% 80% at 50% 0%, #15504f 0%, #0f3d3e 45%, #0a2a2b 100%);
+  --grad-ivory: linear-gradient(180deg, #fbf6ec 0%, #f6eedd 100%);
+
+  /* Typography */
+  --font-script: 'Great Vibes', 'Brush Script MT', cursive;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --font-body: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-arabic: 'Amiri', 'Traditional Arabic', 'Scheherazade New', serif;
+
+  --fs-body: 1rem;               /* 16px */
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+  --fs-h3: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+  --fs-h2: clamp(2rem, 1.5rem + 2.4vw, 3rem);
+  --fs-script-xl: clamp(3.4rem, 2.2rem + 7vw, 6.5rem);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6rem;
+  --gutter: max(1.25rem, env(safe-area-inset-left), env(safe-area-inset-right));
+  --container: 1080px;
+  --container-narrow: 720px;
+
+  /* Radius */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+  --radius-arch: 999px 999px var(--radius-md) var(--radius-md);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 10px rgba(10, 42, 43, 0.08);
+  --shadow-md: 0 10px 30px rgba(10, 42, 43, 0.12);
+  --shadow-lg: 0 24px 60px rgba(10, 42, 43, 0.22);
+  --shadow-gold: 0 8px 28px rgba(212, 175, 106, 0.28);
+
+  /* Lines */
+  --hairline-gold: 1px solid rgba(212, 175, 106, 0.55);
+  --hairline-gold-soft: 1px solid rgba(212, 175, 106, 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.6s;
+
+  /* Reserved space for floating music toggle */
+  --fab-space: 88px;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--gold-soft);
+  color: var(--emerald-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

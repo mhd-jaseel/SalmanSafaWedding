@@ -1,0 +1,519 @@
+/* ==========================================================================
+   Gate — "the palace doors" opening screen.  Emerald + gold, pure CSS motion.
+   ========================================================================== */
+.gate {
+  --gold: #d4af6a;
+  --gold-soft: #e9d5a6;
+  --gold-deep: #a9813c;
+  --ivory: #fbf6ec;
+  --em: #0f3d3e;
+  --em-deep: #0a2a2b;
+  --px: 0;
+  --py: 0;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  color: var(--ivory);
+  background: radial-gradient(ellipse 120% 80% at 50% 38%, #165655 0%, var(--em) 42%, var(--em-deep) 100%);
+  font-family: var(--font-body, 'Poppins'), system-ui, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------ atmosphere */
+.gate-bg {
+  position: absolute;
+  inset: -24px;
+  pointer-events: none;
+  transform: translate3d(calc(var(--px) * -10px), calc(var(--py) * -8px), 0);
+  transition: transform 0.6s ease-out;
+}
+.gate-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23d4af6a' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='8'/%3E%3Cpath d='M0 0L18 18M72 0L54 18M0 72L18 54M72 72L54 54M36 0V10M36 72V62M0 36H10M72 36H62'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 72px 72px;
+  animation: gate-pan 60s linear infinite;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 85%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 85%);
+}
+.gate-orb {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 106, 0.16) 0%, rgba(212, 175, 106, 0.05) 35%, transparent 65%);
+  animation: gate-drift 16s ease-in-out infinite alternate;
+}
+.gate-orb--a { left: -30vmax; top: -25vmax; }
+.gate-orb--b { right: -35vmax; bottom: -30vmax; animation-duration: 21s; animation-delay: -6s; }
+.gate-orb--c {
+  left: 50%;
+  top: 44%;
+  width: 46vmax;
+  height: 46vmax;
+  margin: -23vmax 0 0 -23vmax;
+  background: radial-gradient(circle, rgba(233, 213, 166, 0.14) 0%, transparent 60%);
+  animation: gate-breathe 5s ease-in-out infinite;
+}
+.gate-dust i {
+  position: absolute;
+  bottom: -12px;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: var(--gold-soft);
+  box-shadow: 0 0 6px rgba(233, 213, 166, 0.9);
+  opacity: 0;
+  animation: gate-rise var(--dur) linear infinite;
+}
+.gate-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 75% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+/* ------------------------------------------------------------ layout */
+.gate-inner {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.5dvh, 16px);
+  padding: max(16px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom));
+  text-align: center;
+  transform-origin: 50% 52%;
+}
+
+.gate-in {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: gate-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards;
+}
+
+.gate-bismillah {
+  margin: 0;
+  font-family: var(--font-arabic, 'Amiri'), serif;
+  font-size: clamp(20px, 5.6vw, 28px);
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(212, 175, 106, 0.45);
+  line-height: 1.6;
+}
+
+.gate-kicker {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display, 'Cormorant Garamond'), serif;
+  font-style: italic;
+  font-size: clamp(15px, 4.2vw, 19px);
+  color: var(--gold-soft);
+  letter-spacing: 0.02em;
+}
+.gate-kicker__star {
+  width: 10px;
+  height: 10px;
+  color: var(--gold);
+  animation: gate-spin 8s linear infinite;
+}
+
+.gate-names {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.18em;
+  font-family: var(--font-script, 'Great Vibes'), cursive;
+  font-weight: 400;
+  font-size: clamp(42px, 12.5vw, 68px);
+  line-height: 1.12;
+  white-space: nowrap;
+}
+.gate-shimmer {
+  background: linear-gradient(100deg, #b98a3e 0%, #e9d5a6 22%, #fff6dc 30%, #d4af6a 42%, #b98a3e 60%, #f3e2b4 78%, #c99a4b 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gate-sheen 5.5s ease-in-out infinite;
+  filter: drop-shadow(0 2px 10px rgba(212, 175, 106, 0.25));
+  padding: 0 0.06em;
+}
+.gate-amp {
+  font-size: 0.62em;
+  color: var(--gold-soft);
+  opacity: 0.9;
+}
+
+/* ------------------------------------------------------------ arch + doors */
+.gate-arch {
+  position: relative;
+  height: clamp(210px, 38dvh, 330px);
+  aspect-ratio: 200 / 306;
+  margin: clamp(2px, 1dvh, 10px) 0;
+  transform: translate3d(calc(var(--px) * 6px), calc(var(--py) * 4px), 0);
+}
+.gate-arch__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 2;
+  pointer-events: none;
+}
+.gate-draw {
+  fill: none;
+  stroke: var(--gold);
+  stroke-linecap: round;
+  stroke-dasharray: 820;
+  stroke-dashoffset: 820;
+  animation: gate-draw 2.2s cubic-bezier(0.5, 0, 0.2, 1) 0.55s forwards;
+}
+.gate-draw--outer { stroke-width: 2.2; filter: drop-shadow(0 0 4px rgba(212, 175, 106, 0.6)); }
+.gate-draw--inner { stroke-width: 1.1; opacity: 0.8; animation-delay: 0.75s; }
+.gate-draw--dots {
+  stroke-width: 1.4;
+  stroke-dasharray: 0.1 5;
+  stroke-dashoffset: 0;
+  opacity: 0;
+  animation: gate-fade 1s ease 2s forwards;
+}
+.gate-finial {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: gate-pop 0.7s cubic-bezier(0.34, 1.6, 0.5, 1) 2.2s forwards;
+}
+
+/* the doorway (same shape as the inner frame line) */
+.gate-portal {
+  all: unset;
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 12.75%;
+  bottom: 0;
+  border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 1;
+  background: #071f20;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+  -webkit-tap-highlight-color: transparent;
+}
+.gate-portal:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 4px;
+}
+
+.gate-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 55% at 50% 58%, #fffaf0 0%, #f6e3b0 22%, #d4af6a 48%, #3c5a40 80%, #0d2e2e 100%);
+  opacity: 0.55;
+  transition: opacity 0.6s ease;
+}
+.gate-rays {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 260%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 246, 220, 0.35) 0deg 5deg, transparent 5deg 18deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+  animation: gate-spin 30s linear infinite;
+}
+
+.gate-door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  transition: transform 1s cubic-bezier(0.6, 0, 0.25, 1) 0.25s;
+  backface-visibility: hidden;
+}
+.gate-door--l {
+  left: 0;
+  transform-origin: 0 50%;
+  transform: perspective(700px) rotateY(0deg);
+}
+.gate-door--r {
+  right: 0;
+  transform-origin: 100% 50%;
+  transform: perspective(700px) rotateY(0deg);
+}
+.gate-door__panel {
+  position: absolute;
+  inset: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M14 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z' fill='none' stroke='%23d4af6a' stroke-opacity='.32' stroke-width='.9'/%3E%3C/svg%3E") center / 22px 22px,
+    linear-gradient(180deg, #1b6361 0%, #12494a 45%, #0c3536 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(212, 175, 106, 0.55),
+    inset 0 0 0 7px rgba(10, 42, 43, 0.85),
+    inset 0 0 0 8px rgba(212, 175, 106, 0.35);
+}
+.gate-door--l .gate-door__panel { box-shadow: inset -1px 0 0 rgba(212, 175, 106, 0.8), inset 0 0 0 7px rgba(10, 42, 43, 0.85), inset 0 0 0 8px rgba(212, 175, 106, 0.35), inset 10px 0 24px rgba(0, 0, 0, 0.35); }
+.gate-door--r .gate-door__panel { box-shadow: inset 1px 0 0 rgba(212, 175, 106, 0.8), inset 0 0 0 7px rgba(10, 42, 43, 0.85), inset 0 0 0 8px rgba(212, 175, 106, 0.35), inset -10px 0 24px rgba(0, 0, 0, 0.35); }
+.gate-door__ring {
+  position: absolute;
+  top: 66%;
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 240, 200, 0.5);
+}
+.gate-door--l .gate-door__ring { right: 10%; }
+.gate-door--r .gate-door__ring { left: 10%; }
+
+/* monogram medallion on the seam */
+.gate-medal {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 40%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  z-index: 3;
+  transition:
+    transform 0.45s cubic-bezier(0.5, 0, 0.75, 0),
+    opacity 0.45s ease;
+  animation: gate-float 4s ease-in-out infinite;
+}
+.gate-medal__ring {
+  position: absolute;
+  inset: -9%;
+  border-radius: 50%;
+  border: 1px dashed rgba(233, 213, 166, 0.7);
+  animation: gate-spin 14s linear infinite;
+}
+.gate-medal__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #fbecc4 0%, #dcb872 34%, #b08640 72%, #7d5c25 100%);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.45),
+    0 0 0 3px rgba(10, 42, 43, 0.6),
+    0 0 0 4px rgba(233, 213, 166, 0.65),
+    inset 0 0 0 3px rgba(122, 90, 36, 0.35),
+    0 0 24px rgba(212, 175, 106, 0.55);
+  font-family: var(--font-script, 'Great Vibes'), cursive;
+  color: #5b3f12;
+  font-size: clamp(22px, 7vw, 34px);
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(255, 240, 200, 0.6);
+}
+.gate-medal__face em {
+  font-style: normal;
+  font-size: 0.55em;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------------ countdown */
+.gate-count {
+  display: flex;
+  gap: clamp(6px, 2.4vw, 12px);
+}
+.gate-count__tile {
+  min-width: clamp(54px, 15vw, 68px);
+  padding: 7px 4px 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(212, 175, 106, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.gate-count__tile b {
+  font-family: var(--font-display, 'Cormorant Garamond'), serif;
+  font-weight: 600;
+  font-size: clamp(20px, 6vw, 26px);
+  line-height: 1;
+  color: var(--gold-soft);
+  font-variant-numeric: tabular-nums;
+}
+.gate-count__tile small {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(251, 246, 236, 0.6);
+}
+
+.gate-date {
+  margin: 0;
+  font-family: var(--font-display, 'Cormorant Garamond'), serif;
+  font-size: clamp(14px, 3.9vw, 17px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+.gate-date span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78em;
+  letter-spacing: 0.24em;
+  color: rgba(251, 246, 236, 0.65);
+}
+
+/* ------------------------------------------------------------ CTA */
+.gate-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: clamp(2px, 1dvh, 8px);
+}
+.gate-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 54px;
+  padding: 0 26px 0 30px;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+  color: #2a1d08;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  background: linear-gradient(110deg, #c99a4b 0%, #f3dfae 45%, #d4af6a 70%, #b98a3e 100%);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 240, 200, 0.5) inset,
+    0 0 26px rgba(212, 175, 106, 0.35);
+  transition: transform 0.2s ease, opacity 0.35s ease;
+  animation: gate-glow 2.4s ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+.gate-button:active { transform: scale(0.96); }
+.gate-button:focus-visible { outline: 2px solid var(--ivory); outline-offset: 4px; }
+.gate-button__shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.65) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: gate-shine 3.2s ease-in-out 1.8s infinite;
+}
+.gate-button__label { position: relative; }
+.gate-button__arrows {
+  position: relative;
+  display: inline-flex;
+}
+.gate-button__arrows i {
+  width: 7px;
+  height: 7px;
+  margin-left: -1px;
+  border-right: 2px solid currentColor;
+  border-top: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.25;
+  animation: gate-chev 1.4s ease-in-out infinite;
+}
+.gate-button__arrows i:nth-child(2) { animation-delay: 0.18s; }
+.gate-button__arrows i:nth-child(3) { animation-delay: 0.36s; }
+
+.gate-hint {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(251, 246, 236, 0.6);
+}
+
+.gate-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 52%, #fffaf0 0%, #f6e3b0 40%, rgba(212, 175, 106, 0.9) 75%);
+}
+
+/* ============================================================ OPENING */
+.gate.is-opening .gate-medal {
+  animation: none;
+  transform: scale(1.3) rotate(120deg);
+  opacity: 0;
+}
+.gate.is-opening .gate-door--l { transform: perspective(700px) rotateY(108deg); }
+.gate.is-opening .gate-door--r { transform: perspective(700px) rotateY(-108deg); }
+.gate.is-opening .gate-light {
+  opacity: 1;
+  transition-delay: 0.3s;
+}
+.gate.is-opening .gate-inner {
+  transition: transform 0.85s cubic-bezier(0.55, 0, 0.6, 1) 0.6s;
+  transform: scale(2.6);
+}
+.gate.is-opening .gate-in:not(.gate-arch) {
+  animation: none;
+  opacity: 0;
+  transform: translateY(0);
+  transition: opacity 0.35s ease;
+}
+.gate.is-opening .gate-flash {
+  animation: gate-flash 0.9s ease 0.55s forwards;
+}
+
+/* ============================================================ keyframes */
+@keyframes gate-in { to { opacity: 1; transform: none; } }
+@keyframes gate-fade { to { opacity: 0.75; } }
+@keyframes gate-draw { to { stroke-dashoffset: 0; } }
+@keyframes gate-pop { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: scale(1); } }
+@keyframes gate-spin { to { transform: rotate(360deg); } }
+@keyframes gate-pan { to { background-position: 72px 144px; } }
+@keyframes gate-drift { to { transform: translate(8vmax, 6vmax) scale(1.1); } }
+@keyframes gate-breathe { 50% { transform: scale(1.12); opacity: 0.7; } }
+@keyframes gate-sheen { 0% { background-position: 100% 0; } 55%, 100% { background-position: 0% 0; } }
+@keyframes gate-float { 50% { translate: -50% calc(-50% - 4px); } }
+@keyframes gate-glow {
+  50% {
+    box-shadow:
+      0 10px 28px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(255, 240, 200, 0.5) inset,
+      0 0 44px rgba(212, 175, 106, 0.6);
+  }
+}
+@keyframes gate-shine { 0% { transform: translateX(-120%); } 45%, 100% { transform: translateX(120%); } }
+@keyframes gate-chev { 0%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
+@keyframes gate-rise {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.9; }
+  85% { opacity: 0.6; }
+  100% { transform: translate(var(--dx), -105dvh); opacity: 0; }
+}
+@keyframes gate-flash { 0% { opacity: 0; } 55% { opacity: 1; } 100% { opacity: 1; } }
+
+/* ------------------------------------------------------------ small phones */
+@media (max-height: 690px) {
+  .gate-arch { height: clamp(180px, 33dvh, 260px); }
+  .gate-hint { display: none; }
+  .gate-names { font-size: clamp(38px, 11vw, 56px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate *,
+  .gate *::before,
+  .gate *::after {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+  .gate-dust,
+  .gate-rays { display: none; }
+}
