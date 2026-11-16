@@ -1,5 +1,5 @@
-// Bride (Safa) — big-head "realistic cartoon": her real face inside an ivory
-// hijab, a sheer red net dupatta over it with a gold zari border, maroon-red
+// Bride (Safa) — big-head "realistic cartoon": her real face under a simple
+// Kerala-style cream thattam (light shawl round the head and neck, gold border + red dots), maroon-red
 // bridal lehenga with gold butas and a heavy scalloped gold hem, Kerala gold
 // oddiyanam (waist belt) + layered gold necklaces, hennaed hands with bangles.
 // Matches the back view in HugCouple.jsx.  Inline SVG, viewBox 0 0 120 200
@@ -18,11 +18,6 @@ const GOLD_L = '#ecd08a'
 const GOLD_D = '#a8822f'
 const SKIN = '#f2c3a2'
 const HENNA = '#a4451f'
-
-// face opening of the hijab (head-group coords): gently arched over the forehead,
-// hugging the cheeks, closing under the chin — sits just inside the photo's oval edge
-const HIJAB_OPENING =
-  'M60 40.5 C72 40.5 80.6 46 82.2 58 C83.6 74 78.4 91 70 98.6 Q60 105 50 98.6 C41.6 91 36.4 74 37.8 58 C39.4 46 48 40.5 60 40.5 Z'
 
 const SKIRT ='M41 130 Q30 162 13 188 Q60 201 107 188 Q90 162 79 130 Z'
 
@@ -45,11 +40,10 @@ export default function Bride({ armL = 'rest', armR = 'rest', walking = false, b
   return (
     <svg className={cls} viewBox="0 0 120 200" aria-hidden="true" focusable="false">
       <defs>
-        <radialGradient id="ib-hood" cx=".42" cy=".3" r=".8">
-          <stop offset="0" stopColor="#fffaf0" />
-          <stop offset=".7" stopColor="#f3e5c8" />
-          <stop offset="1" stopColor="#e1c895" />
-        </radialGradient>
+        <linearGradient id="ib-cream" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fbf3e2" />
+          <stop offset="1" stopColor="#ecd8b0" />
+        </linearGradient>
         <linearGradient id="ib-skirt" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#8a1630" />
           <stop offset=".6" stopColor={RED} />
@@ -58,10 +52,6 @@ export default function Bride({ armL = 'rest', armR = 'rest', walking = false, b
         <linearGradient id="ib-blouse" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#a52039" />
           <stop offset="1" stopColor="#7d1229" />
-        </linearGradient>
-        <linearGradient id="ib-net" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#c83a55" stopOpacity=".3" />
-          <stop offset="1" stopColor="#a8213b" stopOpacity=".62" />
         </linearGradient>
         <linearGradient id="ib-gold" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#f1d998" />
@@ -82,17 +72,13 @@ export default function Bride({ armL = 'rest', armR = 'rest', walking = false, b
             <circle cx="8.5" cy="9" r=".6" opacity=".7" />
           </g>
         </pattern>
-        <pattern id="ib-sequin" width="6" height="6" patternUnits="userSpaceOnUse">
-          <circle cx="1.5" cy="1.5" r=".45" fill="#f7e2a6" />
-          <circle cx="4.5" cy="4.5" r=".35" fill="#f7e2a6" opacity=".7" />
-        </pattern>
         <clipPath id="ib-skirt-clip">
           <path d={SKIRT} />
         </clipPath>
       </defs>
 
-      {/* net dupatta back drape (behind everything) */}
-      <path d="M27 96 Q13 128 18 164 Q60 175 102 164 Q107 128 93 96 Z" fill="#8f1a33" opacity=".55" />
+      {/* thattam back drape (behind everything) */}
+      <path d="M27 96 Q13 128 18 164 Q60 175 102 164 Q107 128 93 96 Z" fill="#e6cfa3" />
 
       {/* feet (golden juttis) */}
       <g className="intro-foot intro-foot-l">
@@ -150,87 +136,69 @@ export default function Bride({ armL = 'rest', armR = 'rest', walking = false, b
       <ellipse cx="60" cy="134" rx="4.2" ry="3.4" fill="url(#ib-gold)" stroke={GOLD_D} strokeWidth=".5" />
       <circle cx="60" cy="134" r="1.5" fill={RED} />
 
-      {/* ---------------- net dupatta: side panels falling to the knees */}
-      <path d="M26 104 Q16 140 22 177 L31.5 174.5 Q28.5 142 34 116 Z" fill="url(#ib-net)" />
-      <path d="M94 104 Q104 140 98 177 L88.5 174.5 Q91.5 142 86 116 Z" fill="url(#ib-net)" />
-      <path d="M26 104 Q16 140 22 177 L31.5 174.5 Q28.5 142 34 116 Z" fill="url(#ib-sequin)" opacity=".8" />
-      <path d="M94 104 Q104 140 98 177 L88.5 174.5 Q91.5 142 86 116 Z" fill="url(#ib-sequin)" opacity=".8" />
-      <path d="M25 108 Q16.4 140 21.4 175" fill="none" stroke={GOLD} strokeWidth="1.8" />
-      <path d="M95 108 Q103.6 140 98.6 175" fill="none" stroke={GOLD} strokeWidth="1.8" />
-      <path d="M22 177 L31.5 174.5 M98 177 L88.5 174.5" stroke={GOLD} strokeWidth="2.4" strokeLinecap="round" />
-      {/* tassels */}
-      <g fill={GOLD}>
-        <path d="M24.4 176.4 l-1.3 4.6 h2.6 Z" />
-        <circle cx="24.4" cy="182.4" r="1.2" />
-        <path d="M95.6 176.4 l-1.3 4.6 h2.6 Z" />
-        <circle cx="95.6" cy="182.4" r="1.2" />
+      {/* ---------------- thattam end thrown over one shoulder, falling to the knees */}
+      <path d="M26 104 Q16 140 22 177 L31.5 174.5 Q28.5 142 34 116 Z" fill="url(#ib-cream)" />
+      <path d="M25 108 Q16.4 140 21.4 175" fill="none" stroke={GOLD} strokeWidth="1.4" />
+      <path d="M25.6 112 Q18.6 140 23.6 172" fill="none" stroke={RED} strokeWidth="1.6" strokeDasharray="0.1 3.6" strokeLinecap="round" opacity=".85" />
+      <path d="M22 177 L31.5 174.5" stroke={GOLD} strokeWidth="1.8" strokeLinecap="round" />
+
+      {/* neck + blouse neckline */}
+      <path d="M49 98 L71 98 L72 113 Q60 121 48 113 Z" fill="url(#ib-skin)" />
+      <path d="M49 113.4 Q60 125 71 113.4" fill="url(#ib-skin)" />
+      <path d="M49 113.4 Q60 125 71 113.4" fill="none" stroke={GOLD} strokeWidth="1" />
+
+      {/* thattam over her right shoulder */}
+      <path d="M30 95 Q17 112 24 128 Q35 134 45 131 Q47 114 50 100 Z" fill="url(#ib-cream)" />
+      <path d="M45 131 Q47 114 50 100" fill="none" stroke={GOLD} strokeWidth="1.1" />
+
+      {/* gold bridal necklaces */}
+      <g transform="translate(0 6)">
+        <g fill="none" strokeLinecap="round">
+          <path d="M50 110 Q60 117 70 110" stroke={GOLD} strokeWidth="1.5" />
+          <path d="M48 111 Q60 126 72 111" stroke={GOLD} strokeWidth="1.3" />
+          <path d="M48 111 Q60 126 72 111" stroke={GOLD_L} strokeWidth="2.4" strokeDasharray="0.1 3.2" />
+        </g>
+        <path d="M57 123 Q60 121.4 63 123 L61.4 128 Q60 129 58.6 128 Z" fill="url(#ib-gold)" stroke={GOLD_D} strokeWidth=".4" />
+        <circle cx="60" cy="125" r=".9" fill={RED} />
       </g>
 
-      {/* hijab front over the shoulders / chest */}
-      <path d="M28 95 Q17 112 24 128 Q42 138 60 136.5 Q78 138 96 128 Q103 112 92 95 Z" fill="url(#ib-hood)" />
-      <path d="M34 104 Q46 118 60 120 Q74 118 86 104" fill="none" stroke="#dcc396" strokeWidth=".9" opacity=".8" />
-      {/* net dupatta edge across the chest */}
-      <path d="M23.6 117 Q36 133 60 134.6 Q84 133 96.4 117 L97.6 122 Q85 138.6 60 139.6 Q35 138.6 22.4 122 Z" fill="url(#ib-net)" />
-      <path d="M23.6 117 Q36 133 60 134.6 Q84 133 96.4 117" fill="none" stroke={GOLD} strokeWidth="1.3" />
-      <path d="M22.4 122 Q35 138.6 60 139.6 Q85 138.6 97.6 122" fill="none" stroke={GOLD} strokeWidth="1.4" />
-
-      {/* layered gold bridal necklaces worn over the hijab */}
-      <g fill="none" strokeLinecap="round">
-        <path d="M46 108 Q60 119 74 108" stroke={GOLD} strokeWidth="1.6" />
-        <path d="M46.6 108.8 Q60 120.6 73.4 108.8" stroke={GOLD_L} strokeWidth="1.1" strokeDasharray="0.1 2.2" />
-        <path d="M42 110 Q60 129 78 110" stroke={GOLD} strokeWidth="1.4" />
-        <path d="M42 110 Q60 129 78 110" stroke={GOLD_L} strokeWidth="2.6" strokeDasharray="0.1 3.2" />
-      </g>
-      <g fill="url(#ib-gold)" stroke={GOLD_D} strokeWidth=".4">
-        <path d="M57 118 Q60 116.4 63 118 L61.4 123.4 Q60 124.4 58.6 123.4 Z" />
-        <path d="M56.4 126.6 Q60 124.6 63.6 126.6 L62 132 Q60 133.4 58 132 Z" />
-      </g>
-      <circle cx="60" cy="120" r=".9" fill={RED} />
-      <circle cx="60" cy="128.6" r="1" fill={RED} />
-
-      {/* ---------------- head: hijab hood + Safa's face, net dupatta over it */}
+      {/* ---------------- head: Safa's face under a Kerala-style thattam */}
       <g className="intro-head">
         <g transform="translate(60 106) scale(0.86) translate(-60 -106)">
-          {/* the face (drawn first; the hijab below covers everything outside a snug face opening) */}
+          {/* hair behind the face (shows where the shawl sits loose) */}
+          <path d="M38 84 L82 84 L84 112 L36 112 Z" fill="#2b1a13" />
+          <path d="M60 20 C79 20 89 35 88.6 56 C88.4 74 86 86 82 94 L38 94 C34 86 31.6 74 31.4 56 C31 35 41 20 60 20 Z" fill="#2b1a13" />
+          {/* neck under the jaw */}
+          <path d="M50.5 90 L69.5 90 L71 116 L49 116 Z" fill="#e8b493" />
+          <path d="M50.5 98 Q60 106 69.5 98 L69.5 102 Q60 108 50.5 102 Z" fill="#c98f6e" opacity=".45" />
+
+          {/* the face */}
           <image href={safaFace} x="33" y="24.05" width="54" height="81.6" preserveAspectRatio="xMidYMid meet" />
 
-          {/* ivory hijab: rounded over the crown, falling straight past the cheeks to the
-              shoulders, with a face-shaped opening (forehead → under the chin) */}
+          {/* thattam: light shawl resting round the head, hairline showing in front */}
           <path
-            fillRule="evenodd"
-            fill="url(#ib-hood)"
-            d={`M60 12 C85 12 100 31 100 58 C100 82 95 100 88 112 L32 112 C25 100 20 82 20 58 C20 31 35 12 60 12 Z ${HIJAB_OPENING}`}
+            d="M40 104 C38.4 97 37.4 89 38 78 C36.8 66 37 56 39.4 47 C43 36 51 31.4 60 31.4 C69 31.4 77 36 80.6 47 C83 56 83.2 66 82 78 C82.6 89 81.6 97 80 104 C86 100 90 92 92 80 C95 60 93 38 83 27 C77 19.4 69 15 60 15 C51 15 43 19.4 37 27 C27 38 25 60 28 80 C30 92 34 100 40 104 Z"
+            fill="url(#ib-cream)"
+            opacity=".95"
           />
-          {/* under-chin wrap + fabric folds */}
-          <g fill="none" stroke="#d6bd8b" strokeLinecap="round">
-            <path d="M42 98 Q60 113 78 98" strokeWidth="1.2" />
-            <path d="M46 104.6 Q60 114 74 104.6" strokeWidth=".9" opacity=".7" />
-            <path d="M30.6 62 Q28 86 35 108 M89.4 62 Q92 86 85 108" strokeWidth="1" opacity=".75" />
-            <path d="M25 70 Q25 92 31 110 M95 70 Q95 92 89 110" strokeWidth=".8" opacity=".55" />
+          {/* soft folds following the head + sheen */}
+          <g fill="none" stroke="#d8bd8a" strokeLinecap="round" opacity=".8">
+            <path d="M31 70 Q31 40 52 22" strokeWidth="1" />
+            <path d="M89 70 Q90 46 76 26" strokeWidth=".9" />
           </g>
-          {/* inner cap edge hugging the face, with a fine gold line */}
-          <path d={HIJAB_OPENING} fill="none" stroke="#e9d6ae" strokeWidth="2.2" />
-          <path d={HIJAB_OPENING} fill="none" stroke={GOLD} strokeWidth=".7" transform="translate(60 70) scale(1.07 1.05) translate(-60 -70)" />
+          <path d="M34 46 Q42 24 64 18.6" fill="none" stroke="#fff" strokeOpacity=".55" strokeWidth="2.2" strokeLinecap="round" />
+          {/* gold border + red dots along the front edge */}
+          <path d="M40 104 C38.4 97 37.4 89 38 78 C36.8 66 37 56 39.4 47 C43 36 51 31.4 60 31.4 C69 31.4 77 36 80.6 47 C83 56 83.2 66 82 78 C82.6 89 81.6 97 80 104" fill="none" stroke={GOLD} strokeWidth="1.8" />
+          <path d="M36.8 102 C35.2 96 34.2 89 34.8 78 C33.6 66 33.8 55 36.4 45.4 C40.4 33 50 28 60 28 C70 28 79.6 33 83.6 45.4 C86.2 55 86.4 66 85.2 78 C85.8 89 84.8 96 83.4 102" fill="none" stroke={RED} strokeWidth="2" strokeDasharray="0.1 4" strokeLinecap="round" opacity=".85" />
 
-          {/* sheer red net dupatta laid over the head, front edge set back over the forehead */}
+          {/* loose wrap round the neck, carrying the shawl over to her right shoulder */}
           <path
-            d="M60 8 C87 8 103 30 103 58 C103 83 98 101 91 113 L83 113 C89 98 92.6 80 91.6 60 C90.6 37 78 23 60 23 C42 23 29.4 37 28.4 60 C27.4 80 31 98 37 113 L29 113 C22 101 17 83 17 58 C17 30 33 8 60 8 Z"
-            fill="url(#ib-net)"
+            d="M82 99 C84 107 76 113 60 113.6 C46 114 37 110 34 103 L27 110 C32 120 46 123.4 60 123 C77 122.4 89 114 88 100 Z"
+            fill="url(#ib-cream)"
           />
-          <path
-            d="M60 8 C87 8 103 30 103 58 C103 83 98 101 91 113 L83 113 C89 98 92.6 80 91.6 60 C90.6 37 78 23 60 23 C42 23 29.4 37 28.4 60 C27.4 80 31 98 37 113 L29 113 C22 101 17 83 17 58 C17 30 33 8 60 8 Z"
-            fill="url(#ib-sequin)"
-            opacity=".75"
-          />
-          {/* gold zari border along the dupatta's front edge */}
-          <path d="M37 113 C31 98 27.4 80 28.4 60 C29.4 37 42 23 60 23 C78 23 90.6 37 91.6 60 C92.6 80 89 98 83 113" fill="none" stroke={GOLD} strokeWidth="2.4" />
-          <path d="M34.4 112 C29 98 25.6 80 26.4 60 C27.6 35 41 20.6 60 20.6 C79 20.6 92.4 35 93.6 60 C94.4 80 91 98 85.6 112" fill="none" stroke={GOLD_L} strokeWidth="1.3" strokeDasharray="0.1 3" strokeLinecap="round" />
-          {/* soft sheen on the crown */}
-          <path d="M30 40 Q40 17 66 13" fill="none" stroke="#fff" strokeOpacity=".4" strokeWidth="2.2" strokeLinecap="round" />
-
-          {/* jewelled hijab pin at the side */}
-          <circle cx="84" cy="94" r="3" fill="url(#ib-gold)" />
-          <circle cx="84" cy="94" r="1.3" fill={RED} />
+          <path d="M80 108 Q62 118 40 112" fill="none" stroke="#d8bd8a" strokeWidth=".9" strokeLinecap="round" opacity=".8" />
+          <path d="M27 110 C32 120 46 123.4 60 123 C77 122.4 89 114 88 100" fill="none" stroke={GOLD} strokeWidth="1.5" />
+          <path d="M29.6 108 C34.6 117.6 47 120.6 60 120.2 C75 119.8 85.6 113 85.2 101" fill="none" stroke={RED} strokeWidth="1.8" strokeDasharray="0.1 3.8" strokeLinecap="round" opacity=".85" />
 
           {/* (kept for the blush CSS hook; invisible on a real face) */}
           <g className="intro-cheeks" opacity="0" />
