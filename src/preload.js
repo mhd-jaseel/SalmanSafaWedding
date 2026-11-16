@@ -6,9 +6,12 @@
 // wait for the network again, so it plays smoothly on slow phones too.
 //
 // Progress is real: each task reports how far it is, weighted by its size,
-// and drives the gold ring + percentage.  A safety cap makes sure a very slow
+// and is fed to the inline loader driver (index.html), which draws the arch,
+// the line and the count.  A safety cap makes sure a very slow
 // connection never keeps guests stuck on the loader.
 // ---------------------------------------------------------------------------
+
+import { setDoorRecording } from './components/Gate/doorSound.js'
 
 const SAFETY_MS = 30000 // reveal the site after this even if music is still downloading
 const FONT_TIMEOUT_MS = 8000
@@ -70,10 +73,9 @@ const fetchMusic = async (src, onFrac) => {
  * Load everything, animating #boot, then fade it out.
  * @param {{ chunks: (() => Promise<unknown>)[], music?: string }} opts
  */
-export function preloadAll({ chunks, music }) {
-  const boot = typeof document !== 'undefined' ? document.getElementById('boot') : null
-  const arc = document.getElementById('boot-arc')
-  const pctEl = document.getElementById('boot-pct')
+export function preloadAll({ chunks, music, doorSound }) {
+  // the progress driver lives inline in index.html (window.__boot)
+  const driver = typeof window !== 'undefined' ? window.__boot : null
 
   // task weights (≈ download size): code chunks + fonts are light, the song is heavy
   const tasks = []
@@ -82,17 +84,9 @@ export function preloadAll({ chunks, music }) {
     tasks.push(t)
     return t
   }
-  const total = () => tasks.reduce((s, t) => s + t.weight, 0)
-
-  let shown = 0
-  const render = () => {
-    const p = tasks.reduce((s, t) => s + t.weight * t.frac, 0) / total()
-    const pct = Math.min(100, Math.round(p * 100))
-    if (pct < shown) return // never go backwards
-    shown = pct
-    if (boot && !boot.classList.contains('is-det')) boot.classList.add('is-det')
-    if (arc) arc.style.strokeDashoffset = String(100 - pct)
-    if (pctEl) pctEl.textContent = String(pct)
+  const report = () => {
+    const total = tasks.reduce((s, t) => s + t.weight, 0)
+    driver?.progress(tasks.reduce((s, t) => s + t.weight * t.frac, 0) / total)
   }
   const track = (weight, promise) => {
     const t = add(weight)
@@ -100,7 +94,7 @@ export function preloadAll({ chunks, music }) {
       .catch(() => {}) // a failed piece must not block the site; it loads on demand later
       .then(() => {
         t.frac = 1
-        render()
+        report()
       })
   }
 
@@ -108,37 +102,41 @@ export function preloadAll({ chunks, music }) {
     ...chunks.map((load) => track(1, load())),
     track(1, fontsReady()),
   ]
+  if (doorSound) {
+    work.push(
+      track(
+        1,
+        fetch(doorSound)
+          .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`door ${r.status}`))))
+          .then(setDoorRecording),
+      ),
+    )
+  }
   if (music) {
     const t = add(6)
     work.push(
       fetchMusic(music, (f) => {
         t.frac = Math.min(0.99, f)
-        render()
+        report()
       })
         .catch(() => {}) // falls back to streaming the file when tapped
         .then(() => {
           t.frac = 1
-          render()
+          report()
         }),
     )
   }
-  render()
+  report()
 
   let finished = false
   const finish = () => {
     if (finished) return
     finished = true
-    if (!boot) return
-    boot.classList.add('is-done')
-    setTimeout(() => boot.remove(), 700)
+    // the driver runs the line + count up to 100, then fades the loader out
+    if (driver) return driver.finish()
+    document.getElementById('boot')?.remove()
   }
 
-  const all = Promise.all(work).then(() => {
-    // let the ring visibly reach 100% before fading
-    tasks.forEach((t) => (t.frac = 1))
-    render()
-    return new Promise((r) => setTimeout(r, 350))
-  })
   const safety = new Promise((r) => setTimeout(r, SAFETY_MS))
-  return Promise.race([all, safety]).then(finish)
+  return Promise.race([Promise.all(work), safety]).then(finish)
 }

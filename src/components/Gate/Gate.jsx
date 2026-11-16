@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { GATE_OPEN_MS, GATE_OPEN_REDUCED_MS } from './timing.js'
 import './Gate.css'
 
 /*
@@ -9,7 +10,6 @@ import './Gate.css'
     onTap():  called SYNCHRONOUSLY inside the tap (start audio here).
     onOpen(): called when the doors have opened into the light.
 */
-const OPEN_MS = 1300
 
 function useCountdown(iso) {
   const target = useMemo(() => (iso ? new Date(iso).getTime() : NaN), [iso])
@@ -101,7 +101,7 @@ export default function Gate({ data, onOpen, onTap }) {
     if (navigator.userActivation?.isActive) navigator.vibrate?.(18)
     setOpening(true)
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    setTimeout(() => onOpen?.(), reduce ? 200 : OPEN_MS)
+    setTimeout(() => onOpen?.(), reduce ? GATE_OPEN_REDUCED_MS : GATE_OPEN_MS)
   }
 
   return (

@@ -44,50 +44,124 @@
 
     <!-- instant first paint (before any JS): emerald backdrop + the loader.
          The loader stays up until the whole site (code, fonts, music) is downloaded;
-         src/preload.js drives its progress ring and removes it. -->
+         the inline driver below animates the arch, line and count; src/preload.js feeds it. -->
     <style>
       html,body{margin:0;background:#0a2a2b}
-      .boot{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:radial-gradient(ellipse at 50% 42%,#14504f 0%,#0a2a2b 70%);color:#e9cf93;font-family:Georgia,'Times New Roman',serif;transition:opacity .6s ease,visibility .6s;-webkit-tap-highlight-color:transparent}
-      .boot.is-done{opacity:0;visibility:hidden;pointer-events:none}
-      .bl{position:relative;width:132px;height:132px}
+      .boot{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 44%,#15544f 0%,#0c3434 38%,#071f20 78%);color:#e9cf93;font-family:Georgia,'Times New Roman',serif;transition:opacity .8s ease,visibility .8s,transform .8s ease;-webkit-tap-highlight-color:transparent}
+      .boot.is-done{opacity:0;visibility:hidden;transform:scale(1.04);pointer-events:none}
+      .boot::before{content:'';position:absolute;left:50%;top:44%;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;background:radial-gradient(circle,rgba(233,190,104,.2) 0%,rgba(233,190,104,0) 65%);animation:blglow 3.6s ease-in-out infinite}
+      .bl-sp{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;background:#f6dc9a;box-shadow:0 0 6px 1px rgba(246,220,154,.8);opacity:0;animation:blrise 5s linear infinite}
+      .bl-sp:nth-child(1){margin-left:-120px;animation-delay:0s}
+      .bl-sp:nth-child(2){margin-left:95px;animation-delay:-1.2s;animation-duration:6s}
+      .bl-sp:nth-child(3){margin-left:-60px;animation-delay:-2.6s;animation-duration:5.6s}
+      .bl-sp:nth-child(4){margin-left:130px;animation-delay:-3.7s}
+      .bl-sp:nth-child(5){margin-left:-150px;animation-delay:-4.4s;animation-duration:6.4s}
+      .bl-sp:nth-child(6){margin-left:40px;animation-delay:-.6s;animation-duration:6.8s;width:2px;height:2px}
+      .bl{position:relative;width:150px;height:188px}
       .bl svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-      .bl-track{fill:none;stroke:rgba(212,175,106,.18);stroke-width:2.4}
-      .bl-arc{fill:none;stroke:#d4af6a;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:74;transform-origin:60px 60px;transform:rotate(-90deg);transition:stroke-dashoffset .45s ease;filter:drop-shadow(0 0 4px rgba(244,205,120,.55))}
-      .boot:not(.is-det) .bl-spin{transform-origin:60px 60px;animation:blspin 1.3s linear infinite}
-      .bl-orn{fill:#d4af6a;opacity:.55}
-      .bl-mono{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:4px;font-style:italic;font-size:34px;letter-spacing:.5px;color:#f1d998;text-shadow:0 0 14px rgba(212,175,106,.35);animation:blbreathe 2.4s ease-in-out infinite}
-      .bl-mono i{font-size:22px;opacity:.85}
-      .bl-t{margin:0;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:rgba(233,207,147,.85)}
-      .bl-t b{display:inline-block;width:1.4em;text-align:left;font-weight:400}
-      .bl-t b::after{content:'';animation:bldots 1.4s steps(4) infinite}
-      .bl-p{margin:-8px 0 0;font-size:15px;font-variant-numeric:tabular-nums;color:#f1d998;min-height:1.2em}
-      .boot:not(.is-det) .bl-p{visibility:hidden}
-      @keyframes blspin{to{transform:rotate(360deg)}}
-      @keyframes blbreathe{0%,100%{opacity:.8;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
-      @keyframes bldots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
-      @media (prefers-reduced-motion:reduce){.bl-mono,.bl-spin,.bl-t b::after{animation:none!important}}
+      .bl-track{fill:none;stroke:rgba(212,175,106,.16);stroke-width:1.6}
+      .bl-arc{fill:none;stroke:url(#blg);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 3px rgba(246,214,140,.75))}
+      .bl-in{fill:none;stroke:rgba(212,175,106,.32);stroke-width:.8;stroke-dasharray:.4 3.4;stroke-linecap:round}
+      .bl-moon{fill:#e9c77e;transform-origin:75px 56px;animation:blbreathe 3s ease-in-out infinite}
+      .bl-txt{position:absolute;left:0;right:0;top:86px;text-align:center}
+      .bl-mono{display:inline-block;font-style:italic;font-size:38px;line-height:1;letter-spacing:1px;background:linear-gradient(100deg,#a87d34 0%,#e9c77e 30%,#fff3cf 45%,#e9c77e 60%,#a87d34 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:blshine 3.2s linear infinite}
+      .bl-mono i{font-size:24px;padding:0 3px}
+      .bl-div{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px}
+      .bl-div::before,.bl-div::after{content:'';width:26px;height:1px;background:linear-gradient(90deg,transparent,#c9a24f)}
+      .bl-div::after{transform:scaleX(-1)}
+      .bl-div b{width:5px;height:5px;background:#d4af6a;transform:rotate(45deg)}
+      .bl-t{margin:30px 0 0;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:rgba(233,207,147,.78);padding-left:.34em}
+      .bl-bar{position:relative;width:168px;height:1px;margin-top:14px;background:rgba(212,175,106,.18);border-radius:1px}
+      .bl-fill{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,rgba(212,175,106,.35),#f1d998)}
+      .bl-p{margin:10px 0 0;font-size:12px;letter-spacing:.18em;font-variant-numeric:tabular-nums;color:rgba(241,217,152,.9);min-height:1.2em}
+      @keyframes blshine{0%{background-position:120% 0}100%{background-position:-120% 0}}
+      @keyframes blbreathe{0%,100%{opacity:.75;transform:scale(.94)}50%{opacity:1;transform:scale(1.05)}}
+      @keyframes blglow{0%,100%{opacity:.6;transform:scale(.92)}50%{opacity:1;transform:scale(1.06)}}
+      @keyframes blrise{0%{opacity:0;transform:translateY(150px) scale(.6)}15%{opacity:.9}75%{opacity:.5}100%{opacity:0;transform:translateY(-190px) scale(1)}}
+      @media (prefers-reduced-motion:reduce){.boot *,.boot::before{animation:none!important}.bl-sp{display:none}}
     </style>
   </head>
   <body>
     <noscript>Please enable JavaScript to view this invitation.</noscript>
     <div id="root"></div>
     <div id="boot" class="boot" role="status" aria-live="polite" aria-label="Loading the invitation">
+      <span class="bl-sp"></span><span class="bl-sp"></span><span class="bl-sp"></span><span class="bl-sp"></span><span class="bl-sp"></span><span class="bl-sp"></span>
       <div class="bl">
-        <svg viewBox="0 0 120 120" aria-hidden="true">
-          <g class="bl-orn">
-            <path d="M60 -1 l2.4 3.6 -2.4 3.6 -2.4 -3.6z"/><path d="M60 114 l2.4 3.6 -2.4 3.6 -2.4 -3.6z"/>
-            <path d="M-1 60 l3.6 -2.4 3.6 2.4 -3.6 2.4z"/><path d="M114 60 l3.6 -2.4 3.6 2.4 -3.6 2.4z"/>
-            <circle cx="18.2" cy="18.2" r="1.3"/><circle cx="101.8" cy="18.2" r="1.3"/><circle cx="18.2" cy="101.8" r="1.3"/><circle cx="101.8" cy="101.8" r="1.3"/>
+        <svg viewBox="0 0 150 188" aria-hidden="true">
+          <defs>
+            <linearGradient id="blg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#b8893a"/><stop offset=".6" stop-color="#e9c77e"/><stop offset="1" stop-color="#fff0c4"/></linearGradient>
+          </defs>
+          <!-- mihrab arch: faint track + gold stroke drawn with the progress -->
+          <path class="bl-track" d="M14 186 V84 C14 50 42 26 75 4 C108 26 136 50 136 84 V186"/>
+          <path id="boot-arc" class="bl-arc" pathLength="100" d="M14 186 V84 C14 50 42 26 75 4 C108 26 136 50 136 84 V186"/>
+          <path class="bl-in" d="M24 180 V88 C24 58 48 38 75 18 C102 38 126 58 126 88 V180"/>
+          <path d="M8 186 H142" stroke="rgba(212,175,106,.35)" stroke-width=".8"/>
+          <!-- crescent + star -->
+          <g class="bl-moon">
+            <path d="M78 45 A11 11 0 1 0 78 67 A13.5 13.5 0 0 1 78 45 Z"/>
+            <path d="M79 53 l1.1 2.4 2.6 .3 -1.9 1.8 .5 2.6 -2.3 -1.3 -2.3 1.3 .5 -2.6 -1.9 -1.8 2.6 -.3 z"/>
           </g>
-          <circle class="bl-track" cx="60" cy="60" r="52"/>
-          <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(212,175,106,.28)" stroke-width=".8" stroke-dasharray=".5 3.2" stroke-linecap="round"/>
-          <g class="bl-spin"><circle id="boot-arc" class="bl-arc" cx="60" cy="60" r="52" pathLength="100"/></g>
         </svg>
-        <div class="bl-mono" aria-hidden="true"><span>S</span><i>&amp;</i><span>S</span></div>
+        <div class="bl-txt" aria-hidden="true">
+          <span class="bl-mono">S<i>&amp;</i>S</span>
+          <div class="bl-div"><b></b></div>
+        </div>
       </div>
-      <p class="bl-t">Preparing your invitation<b></b></p>
+      <p class="bl-t">Preparing your invitation</p>
+      <div class="bl-bar" aria-hidden="true"><span id="boot-bar" class="bl-fill"></span></div>
       <p class="bl-p"><span id="boot-pct">0</span>%</p>
     </div>
+    <script>
+      // Loader progress driver — runs before any other JS, so the count starts at once.
+      // Shows a smooth count that only moves forward: it creeps up while the app code
+      // downloads, then follows the real download progress reported by src/preload.js
+      // (window.__boot.progress). The loader fades only after the line + count reach 100.
+      (function () {
+        var b = document.getElementById('boot')
+        if (!b) return
+        var arc = document.getElementById('boot-arc'), bar = document.getElementById('boot-bar'), pe = document.getElementById('boot-pct')
+        var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16) }
+        var t0 = Date.now(), shown = 0, real = -1, ending = false, last = -1
+        var HEAD = 18 // share of the count used while the app code itself downloads
+        function target() {
+          var creep = HEAD * (1 - Math.exp(-(Date.now() - t0) / 2500))
+          if (ending) return 100
+          return real < 0 ? creep : Math.max(creep, HEAD + (100 - HEAD) * real)
+        }
+        function draw(v) {
+          var n = Math.floor(v)
+          if (arc) arc.style.strokeDashoffset = String(100 - v)
+          if (bar) bar.style.transform = 'scaleX(' + v / 100 + ')'
+          if (pe && n !== last) { pe.textContent = String(n); last = n }
+        }
+        function tick() {
+          var tg = target()
+          if (shown < tg) shown = Math.min(tg, shown + Math.max(ending ? 1.6 : 0.25, (tg - shown) * 0.09))
+          draw(shown)
+          if (ending && shown >= 100) {
+            setTimeout(function () {
+              b.classList.add('is-done')
+              setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b) }, 900)
+            }, 450)
+            return
+          }
+          next()
+        }
+        // next frame — with a timer backup, because animation frames pause while the
+        // page is hidden (app switched, in-app browser in the background)
+        function next() {
+          var ran = false
+          function go() { if (!ran) { ran = true; tick() } }
+          raf(go)
+          setTimeout(go, 120)
+        }
+        window.__boot = {
+          progress: function (p) { if (p > real) real = Math.min(1, p) },
+          finish: function () { real = 1; ending = true }
+        }
+        next()
+      })()
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

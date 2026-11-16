@@ -45,8 +45,15 @@ export const wedding = {
   // Other events (optional — empty array hides the section)
   events: [],
 
-  // Contact for RSVP / directions
-  contacts: [],
+  // Contact for RSVP / directions (shown after the location, with Call + WhatsApp buttons).
+  // Keep the country code (+91) so the WhatsApp link works.
+  contacts: [
+    {
+      label: "Groom's Family",
+      name: 'Sulaiman',
+      phone: '+91 80787 71179',
+    },
+  ],
 
   hashtag: '#SalmanWedsSafa',
   closing: 'Your presence and duas are the greatest gift to us.',
@@ -54,6 +61,11 @@ export const wedding = {
   // Background music. Put your MP3 at public/music/nikkah.mp3.
   // If the file is missing, a soft synthesized melody plays instead.
   music: '/music/nikkah.mp3',
+
+  // Door-opening sound when the gate is tapped. To use a REAL recording, put
+  // an MP3 at public/sfx/door-open.mp3 and set: doorSound: '/sfx/door-open.mp3'
+  // (keep it short, ~1.5–2 s). Left empty, a realistic door sound is synthesized.
+  doorSound: '',
 }
 
 export default wedding

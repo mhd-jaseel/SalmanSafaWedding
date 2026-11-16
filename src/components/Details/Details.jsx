@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Countdown from './Countdown.jsx'
 import Petals from './Petals.jsx'
@@ -141,10 +142,30 @@ function Hero({ data, groom, bride }) {
           )}
         </Reveal>
       </div>
-      <div className="d-scrollcue" aria-hidden="true">
-        <span />
-      </div>
+      <ScrollCue />
     </section>
+  )
+}
+
+// "Scroll" hint at the bottom of the first screen, so guests know there is more
+// below. Disappears for good once they scroll.
+function ScrollCue() {
+  const [gone, setGone] = useState(() => typeof window !== 'undefined' && window.scrollY > 40)
+  useEffect(() => {
+    if (gone) return
+    const onScroll = () => {
+      if (window.scrollY > 40) setGone(true)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [gone])
+  return (
+    <div className={`d-scrollcue${gone ? ' is-gone' : ''}`} aria-hidden="true">
+      <span>Scroll</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3.5 5.5 8 10l4.5-4.5" />
+      </svg>
+    </div>
   )
 }
 

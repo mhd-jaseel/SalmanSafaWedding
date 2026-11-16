@@ -119,6 +119,9 @@
   width: min(240px, 70vw);
   height: auto;
 }
+.d-hero .d-divider svg {
+  width: min(220px, 56vw);
+}
 .d-divider--light {
   color: var(--gold-soft);
 }
@@ -141,7 +144,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: max(var(--space-7), calc(env(safe-area-inset-top) + var(--space-5)));
+  padding-top: max(var(--space-4), calc(env(safe-area-inset-top) + var(--space-3)));
   padding-bottom: var(--space-8);
   text-align: center;
 }
@@ -159,7 +162,7 @@
   position: relative;
   width: 100%;
   max-width: 520px;
-  padding: 5.25rem 1.6rem 2.75rem;
+  padding: 5rem 1.6rem 2.75rem;
 }
 
 .d-hero__arch {
@@ -175,19 +178,21 @@
 .d-hero__inner {
   position: relative;
   z-index: 1;
+  /* keep every line clear of the arch lines */
+  padding-inline: 0.9rem;
 }
 
 .d-hero__crown {
   color: var(--gold);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
   display: flex;
   justify-content: center;
 }
 
 .d-bismillah {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-4);
   font-family: var(--font-arabic);
-  font-size: clamp(1.35rem, 1.1rem + 1.4vw, 1.9rem);
+  font-size: clamp(1rem, 0.7rem + 1.6vw, 1.9rem);
   line-height: 1.9;
   color: var(--gold-soft);
 }
@@ -205,13 +210,13 @@
   font-family: var(--font-body);
   font-style: normal;
   font-size: var(--fs-label);
-  letter-spacing: 0.3em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gold-soft);
 }
 
 .d-names {
-  margin: var(--space-5) 0 var(--space-2);
+  margin: var(--space-4) 0 var(--space-2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -282,9 +287,11 @@
   color: var(--gold);
 }
 .d-hero__venue {
-  margin: var(--space-2) 0 0;
+  margin: var(--space-2) auto 0;
+  max-width: 30ch;
   font-size: var(--fs-small);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
   text-transform: uppercase;
   color: var(--gold-soft);
 }
@@ -297,31 +304,53 @@
   color: rgba(251, 246, 236, 0.82);
 }
 
+/* "scroll down" hint: pinned to the bottom of the screen on the first view,
+   fades away as soon as the guest starts scrolling */
 .d-scrollcue {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
-  width: 22px;
-  height: 36px;
-  margin-left: -11px;
+  bottom: max(1rem, calc(env(safe-area-inset-bottom) + 0.6rem));
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translateX(-50%);
+  padding: 8px 14px 6px;
+  border-radius: 999px;
+  background: rgba(7, 31, 32, 0.78);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   border: 1px solid rgba(212, 175, 106, 0.6);
-  border-radius: 12px;
+  box-shadow: 0 0 14px rgba(212, 175, 106, 0.18);
+  color: var(--gold-soft);
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  padding-left: calc(14px + 0.32em);
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  animation: d-cue-in 0.8s ease 2.2s forwards;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
-.d-scrollcue span {
-  position: absolute;
-  left: 50%;
-  top: 7px;
-  width: 3px;
-  height: 7px;
-  margin-left: -1.5px;
-  border-radius: 2px;
-  background: var(--gold);
-  animation: d-cue 1.8s var(--ease-out) infinite;
+.d-scrollcue.is-gone {
+  opacity: 0 !important;
+  transform: translate(-50%, 10px);
+  animation: none;
+}
+.d-scrollcue svg {
+  width: 16px;
+  height: 16px;
+  color: var(--gold);
+  animation: d-cue 1.6s ease-in-out infinite;
+}
+@keyframes d-cue-in {
+  to { opacity: 1; }
 }
 @keyframes d-cue {
-  0% { transform: translateY(0); opacity: 1; }
-  80% { transform: translateY(12px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 0; }
+  0%, 100% { transform: translateY(-2px); opacity: 0.55; }
+  50% { transform: translateY(4px); opacity: 1; }
 }
 
 /* ---------------- Petals & sparkles ---------------- */
@@ -499,16 +528,40 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  max-width: 100%;
   margin: var(--space-3) 0 0;
-  padding: 4px 14px;
-  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  border-radius: 999px;
   background: rgba(212, 175, 106, 0.14);
   font-size: var(--fs-small);
+  line-height: 1.4;
   color: var(--emerald);
+  text-wrap: balance;
 }
 .d-person__from svg {
   color: var(--gold-deep);
   flex: none;
+}
+/* phones: compact, one tidy line for typical addresses */
+@media (max-width: 480px) {
+  .d-person__from {
+    gap: 5px;
+    padding: 5px 12px;
+    font-size: 0.76rem;
+    letter-spacing: 0.01em;
+    border-radius: 14px;
+  }
+  .d-person__from svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+@media (max-width: 360px) {
+  .d-person__from {
+    padding: 5px 10px;
+    font-size: 0.71rem;
+    letter-spacing: 0;
+  }
 }
 .d-person__about {
   margin: var(--space-4) auto 0;
@@ -939,6 +992,15 @@
   .d-hero__frame {
     padding: 4.75rem 1.1rem 2.5rem;
   }
+  .d-hero__pre--small {
+    letter-spacing: 0.1em;
+  }
+  .d-hero__date {
+    font-size: 1.06rem;
+  }
+  .d-hero .d-divider svg {
+    width: 50vw;
+  }
   .d-countdown {
     gap: 6px;
   }
@@ -1053,8 +1115,15 @@
 /* ---------------- Reduced motion ---------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .d-petals,
-  .d-scrollcue {
+  .d-petals {
     display: none;
+  }
+  /* keep the scroll hint, just without motion */
+  .d-scrollcue {
+    animation: none;
+    opacity: 1;
+  }
+  .d-scrollcue svg {
+    animation: none;
   }
 }

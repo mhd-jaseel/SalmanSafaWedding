@@ -1,6 +1,8 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { wedding } from './data/wedding.js'
 import Gate from './components/Gate/Gate.jsx'
+import { GATE_OPEN_MS, GATE_OPEN_REDUCED_MS } from './components/Gate/timing.js'
+import { playDoorOpen, prepareDoorSound } from './components/Gate/doorSound.js'
 import { music } from './components/Music/useMusic.js'
 import { musicSrc, preloadAll } from './preload.js'
 
@@ -33,7 +35,15 @@ let preloadStarted = false
 const startPreload = () => {
   if (preloadStarted) return
   preloadStarted = true
-  preloadAll({ chunks: [loadIntro, loadDetails, loadToggle], music: wedding.music })
+  preloadAll({
+    chunks: [loadIntro, loadDetails, loadToggle],
+    music: wedding.music,
+    doorSound: wedding.doorSound,
+  }).then(() => {
+    // build the synthesized door sound now, so the tap itself stays instant
+    const ric = window.requestIdleCallback || ((f) => setTimeout(f, 200))
+    ric(prepareDoorSound)
+  })
 }
 
 // Shown only if a piece somehow still isn't ready (e.g. the safety cap hit on a very slow network).
@@ -62,7 +72,14 @@ export default function App() {
   useEffect(startPreload, [])
 
   // Called synchronously inside the tap on the gate -> audio is unlocked.
-  const startMusic = useCallback(() => music.start(musicSrc(wedding.music)), [])
+  // The song becomes audible only once the gate's light has faded away.
+  const startMusic = useCallback(() => {
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const delay = (reduce ? GATE_OPEN_REDUCED_MS : GATE_OPEN_MS) + GATE_FADE_MS + 100
+    music.start(musicSrc(wedding.music), { delay })
+    // door-opening sound, on the audio context the tap just unlocked
+    playDoorOpen(music.ctx)
+  }, [])
 
   const handleGateOpen = useCallback(() => {
     music.start(musicSrc(wedding.music)) // no-op if already started by onTap

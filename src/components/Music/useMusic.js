@@ -55,17 +55,33 @@ class MusicEngine {
   }
 
   // ---------- public API ----------
-  /** Call synchronously from a tap/click handler. Safe to call repeatedly. */
-  start = (src) => {
+  /**
+   * Call synchronously from a tap/click handler. Safe to call repeatedly.
+   * `delay` (ms): the song is unlocked right away (muted, inside the gesture —
+   * mobile browsers require that) but only becomes audible, from the start,
+   * after the delay, e.g. once the gate's light has faded.
+   */
+  start = (src, { delay = 0 } = {}) => {
     if (this.state.started) return
     this.set({ started: true })
     this.userPaused = false
+    const startAt = performance.now() + delay
+    const later = (fn) => {
+      const wait = startAt - performance.now()
+      if (wait <= 0) return fn()
+      clearTimeout(this.delayTimer)
+      this.pendingStart = fn
+      this.delayTimer = setTimeout(() => {
+        this.pendingStart = null
+        fn()
+      }, wait)
+    }
 
     // Unlock Web Audio inside the gesture (needed for the fallback later).
     this.unlockContext()
 
     if (!src) {
-      this.useSynth()
+      later(() => this.useSynth())
       return
     }
 
@@ -74,6 +90,8 @@ class MusicEngine {
     audio.loop = false
     audio.preload = 'auto'
     audio.volume = 0
+    // muted until the delay is over (volume is read-only on iOS, `muted` is not)
+    audio.muted = delay > 0
     audio.setAttribute('playsinline', '')
     let settled = false
 
@@ -93,23 +111,33 @@ class MusicEngine {
         /* ignore */
       }
       this.audio = null
-      this.useSynth()
+      later(() => this.useSynth())
     }
     const ok = () => {
       if (settled) return
       settled = true
       clearTimeout(timeout)
       this.set({ source: 'file' })
-      if (this.userPaused || document.hidden) {
-        audio.pause()
-        this.pausedByVisibility = document.hidden && !this.userPaused
-        this.set({ playing: false })
-        return
-      }
-      this.set({ playing: true })
-      this.fadeAudio(FILE_VOLUME, FADE_IN)
-      // File works: the Web Audio context is not needed, let it sleep.
-      this.ctx?.suspend().catch(() => {})
+      later(() => {
+        // begin from the top, now audible
+        try {
+          if (audio.currentTime > 0) audio.currentTime = 0
+        } catch {
+          /* ignore */
+        }
+        audio.muted = false
+        if (this.userPaused || document.hidden) {
+          audio.pause()
+          this.pausedByVisibility = document.hidden && !this.userPaused
+          this.set({ playing: false })
+          return
+        }
+        if (audio.paused) audio.play().catch(() => {})
+        this.set({ playing: true })
+        this.fadeAudio(FILE_VOLUME, FADE_IN)
+        // File works: the Web Audio context is not needed, let it sleep.
+        this.ctx?.suspend().catch(() => {})
+      })
     }
 
     const timeout = setTimeout(fail, FILE_TIMEOUT_MS)
@@ -130,6 +158,13 @@ class MusicEngine {
   resume = () => {
     this.userPaused = false
     this.pausedByVisibility = false
+    // still waiting for the delayed start? start it now instead
+    if (this.pendingStart) {
+      const fn = this.pendingStart
+      this.pendingStart = null
+      clearTimeout(this.delayTimer)
+      return fn()
+    }
     this.resumeNow(true)
   }
 
