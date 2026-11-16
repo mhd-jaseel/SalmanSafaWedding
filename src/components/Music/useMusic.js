@@ -14,7 +14,7 @@ import { createNikkahSynth } from './synth.js'
 
 const FILE_VOLUME = 0.7
 const SYNTH_VOLUME = 0.55
-const FADE_IN = 2.5 // s
+const FADE_IN = 0.5 // s
 const FADE_OUT = 0.4 // s
 const FILE_TIMEOUT_MS = 9000 // give up on the mp3 if it hasn't started by then
 
@@ -47,6 +47,13 @@ class MusicEngine {
     this.listeners.forEach((fn) => fn())
   }
 
+  getCurrentTime = () => {
+    if (this.audio && Number.isFinite(this.audio.currentTime)) {
+      return this.audio.currentTime
+    }
+    return 0
+  }
+
   // ---------- public API ----------
   /** Call synchronously from a tap/click handler. Safe to call repeatedly. */
   start = (src) => {
@@ -64,11 +71,15 @@ class MusicEngine {
 
     const audio = new Audio()
     this.audio = audio
-    audio.loop = true
+    audio.loop = false
     audio.preload = 'auto'
     audio.volume = 0
     audio.setAttribute('playsinline', '')
     let settled = false
+
+    audio.addEventListener('ended', () => {
+      this.set({ playing: false })
+    })
 
     const fail = () => {
       if (settled) return
@@ -238,6 +249,9 @@ class MusicEngine {
     clearTimeout(this.pauseTimer)
     if (source === 'file' && this.audio) {
       const audio = this.audio
+      if (audio.ended || audio.currentTime >= 64) {
+        audio.currentTime = 0
+      }
       if (fade) {
         try {
           audio.volume = 0

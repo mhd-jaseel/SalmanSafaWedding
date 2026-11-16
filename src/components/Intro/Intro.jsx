@@ -5,6 +5,7 @@ import Bride from './Bride.jsx'
 import Groom from './Groom.jsx'
 import HugCouple from './HugCouple.jsx'
 import { ArchFrame, HeartIcon, InnerArch, Lantern, SharedDefs, Tassel } from './StageArt.jsx'
+import { music } from '../Music/useMusic.js'
 import './Intro.css'
 
 /*
@@ -163,74 +164,111 @@ export default function Intro({ data, onComplete }) {
         return
       }
 
+      // Sync with audio: restart audio at 0 for the intro stage
+      if (music.audio && !music.audio.paused) {
+        try {
+          music.audio.currentTime = 0
+        } catch {}
+      }
+
+      const startWall = performance.now()
+      const getAudioTime = () => {
+        if (music.audio && !music.audio.paused && music.audio.currentTime > 0) {
+          return music.audio.currentTime
+        }
+        return (performance.now() - startWall) / 1000
+      }
+
+      const waitAudio = (targetSec) =>
+        new Promise((resolve) => {
+          const check = () => {
+            if (cancelled) return resolve()
+            if (getAudioTime() >= targetSec) return resolve()
+            requestAnimationFrame(check)
+          }
+          const remainingMs = Math.max(16, (targetSec - getAudioTime()) * 1000)
+          const id = setTimeout(resolve, remainingMs + 350)
+          timers.add(id)
+          requestAnimationFrame(check)
+        })
+
       setX(bride, -off)
       setX(groom, off)
-      await wait(700)
+
+      // 0.0 - 0.72s: stage fades in, Bismillah appears
+      await waitAudio(0.72)
       if (cancelled) return
 
-      // 1. walk in from both sides
+      // 1. walk in from both sides in sync with the verse (0.72s to 3.86s)
       stage('walk')
-      const walkIn = { duration: 3.1, ease: [0.3, 0.15, 0.45, 1] }
+      const walkDur = Math.max(1.5, 3.86 - getAudioTime())
+      const walkIn = { duration: walkDur, ease: [0.35, 0.15, 0.45, 1] }
       go(bride, { x: [-off, mc - meet] }, walkIn)
-      await go(groom, { x: [off, mc + meet] }, walkIn)
+      go(groom, { x: [off, mc + meet] }, walkIn)
+      await waitAudio(3.86)
       if (cancelled) return
 
-      // 2. meet – shy moment
+      // 2. meet – shy moment on downbeat (3.86s to 4.80s)
       stage('meet')
-      await wait(1100)
+      await waitAudio(4.80)
       if (cancelled) return
 
-      // 3. arms open wide and step in…
+      // 3. arms open wide and step in… (4.80s to 5.10s)
       stage('open')
-      const stepIn = { duration: 0.6, ease: [0.4, 0, 0.3, 1] }
+      const stepDur = Math.max(0.2, 5.10 - getAudioTime())
+      const stepIn = { duration: stepDur, ease: [0.4, 0, 0.3, 1] }
       go(bride, { x: mc - hug }, stepIn)
       go(groom, { x: mc + hug }, stepIn)
-      await wait(520)
+      await waitAudio(5.10)
       if (cancelled) return
 
-      // …the embrace: dedicated illustration (her back to us, his arms around her)
+      // 4. embrace: dedicated illustration (her back to us, his arms around her) + heart burst on downbeat (5.10s to 8.67s)
       stage('hug')
-      await wait(2600)
+      await waitAudio(8.67)
       if (cancelled) return
 
-      // 4. let go → hold hands
+      // 5. let go → hold hands on downbeat (8.67s to 9.84s)
       setX(bride, mc - hold)
       setX(groom, mc + hold)
       stage('hold')
-      await wait(800)
+      await waitAudio(9.84)
       if (cancelled) return
 
-      // 5. walk together to the rope
+      // 6. walk together to the rope in beat (9.84s to 12.26s)
       stage('together')
-      const dist = Math.abs(gx - (mc + hold))
-      const dur = Math.min(2.2, Math.max(1.2, dist / 55))
-      const together = { duration: dur, ease: [0.4, 0.1, 0.4, 1] }
+      const togetherDur = Math.max(1.2, 12.26 - getAudioTime())
+      const together = { duration: togetherDur, ease: [0.4, 0.1, 0.4, 1] }
       go(bride, { x: bx }, together)
-      await go(groom, { x: gx }, together)
+      go(groom, { x: gx }, together)
+      await waitAudio(12.26)
       if (cancelled) return
 
-      // 6. reach + tug the rope (CSS keyframes, 1.3 s, rope & groom in sync)
+      // 7. reach for the tassel on downbeat (12.26s to 13.46s)
       stage('reach')
-      await wait(650)
+      await waitAudio(13.46)
       if (cancelled) return
+
+      // 8. tug the rope (CSS keyframes in sync with 13.46s to 14.65s)
       stage('pull')
-      await wait(900)
+      await waitAudio(14.65)
       if (cancelled) return
 
-      // 7. curtain rises
-      const rise = { duration: 2.3, times: [0, 0.14, 1], ease: [0.55, 0, 0.3, 1] }
+      // 9. GRAND CHORUS CLIMAX at 14.65s ("Aroosat Al Noor"): curtain flies up!
+      const rise = { duration: 2.1, times: [0, 0.12, 1], ease: [0.55, 0, 0.25, 1] }
       go(curtLRef.current, { y: ['0%', '3%', '-104%'] }, rise)
-      go(curtRRef.current, { y: ['0%', '3%', '-104%'] }, { ...rise, delay: 0.12 })
-      await wait(450)
-      if (cancelled) return
-      stage('reveal')
-      await wait(2900)
+      go(curtRRef.current, { y: ['0%', '3%', '-104%'] }, { ...rise, delay: 0.1 })
+      await wait(350)
       if (cancelled) return
 
-      // 8. fade / zoom out to the details page
+      // 10. Reveal celebration (radiant rays, golden shower, glowing names)
+      stage('reveal')
+      await waitAudio(18.5)
+      if (cancelled) return
+
+      // 11. fade / zoom out to the details page while music continues
       stage('outro')
-      go(stageRef.current, { scale: 1.08 }, { duration: 1, ease: [0.4, 0, 0.2, 1] })
-      await go(rootRef.current, { opacity: 0 }, { duration: 0.9, ease: 'easeIn' })
+      go(stageRef.current, { scale: 1.08 }, { duration: 1.1, ease: [0.4, 0, 0.2, 1] })
+      await go(rootRef.current, { opacity: 0 }, { duration: 0.95, ease: 'easeIn' })
       if (!cancelled) finish()
     }
 

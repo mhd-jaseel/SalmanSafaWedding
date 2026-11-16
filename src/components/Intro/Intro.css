@@ -132,7 +132,7 @@
   width: 0.48em;
   height: 0.44em;
   color: var(--rose, #c97b84);
-  animation: intro-beat 1.1s ease-in-out infinite;
+  animation: intro-beat 1.2s ease-in-out infinite;
 }
 
 .intro-title-sub {
@@ -368,7 +368,7 @@
   overflow: visible;
 }
 .intro-rope[data-tug='on'] {
-  animation: intro-rope-tug 1.3s ease-in-out forwards;
+  animation: intro-rope-tug 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* ------------------------------------------------------ characters */
@@ -434,7 +434,7 @@
 
 /* both sway together in the hug */
 .intro-dip[data-dip='sway'] {
-  animation: intro-hug-sway 1.6s ease-in-out 0.55s infinite;
+  animation: intro-hug-sway 1.2s ease-in-out infinite alternate;
 }
 @keyframes intro-hug-sway {
   0%, 100% { transform: rotate(0deg); }
@@ -443,11 +443,11 @@
 }
 
 .intro-bob.is-walking {
-  animation: intro-bob 0.9s ease-in-out infinite;
+  animation: intro-bob 1.2s ease-in-out infinite;
 }
 
 .intro-dip[data-dip='tug'] {
-  animation: intro-tug 1.3s ease-in-out forwards;
+  animation: intro-tug 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 .intro-dip[data-dip='hop'] {
   animation: intro-hop 0.75s ease-out 2;
@@ -556,29 +556,29 @@
 .intro-arm-r[data-a='reach'] { transform: rotate(-150deg); }
 
 .intro-svg.is-walking .intro-arm-l[data-a='swing'] {
-  animation: intro-arm-l-swing 0.9s ease-in-out infinite;
+  animation: intro-arm-l-swing 1.2s ease-in-out infinite;
 }
 .intro-svg.is-walking .intro-arm-r[data-a='swing'] {
-  animation: intro-arm-r-swing 0.9s ease-in-out infinite;
+  animation: intro-arm-r-swing 1.2s ease-in-out infinite;
 }
 .intro-arm-l[data-a='cheer'] {
-  animation: intro-arm-l-cheer 0.45s ease-in-out infinite alternate;
+  animation: intro-arm-l-cheer 0.6s ease-in-out infinite alternate;
 }
 .intro-arm-r[data-a='cheer'] {
-  animation: intro-arm-r-cheer 0.45s ease-in-out infinite alternate;
+  animation: intro-arm-r-cheer 0.6s ease-in-out infinite alternate;
 }
 
 .intro-svg.is-walking .intro-leg-l {
-  animation: intro-leg 0.9s ease-in-out infinite;
+  animation: intro-leg 1.2s ease-in-out infinite;
 }
 .intro-svg.is-walking .intro-leg-r {
-  animation: intro-leg 0.9s ease-in-out -0.45s infinite;
+  animation: intro-leg 1.2s ease-in-out -0.6s infinite;
 }
 .intro-svg.is-walking .intro-foot-l {
-  animation: intro-foot 0.9s ease-in-out infinite;
+  animation: intro-foot 1.2s ease-in-out infinite;
 }
 .intro-svg.is-walking .intro-foot-r {
-  animation: intro-foot 0.9s ease-in-out -0.45s infinite;
+  animation: intro-foot 1.2s ease-in-out -0.6s infinite;
 }
 
 /* ---------------------------------------------------------- hearts */
