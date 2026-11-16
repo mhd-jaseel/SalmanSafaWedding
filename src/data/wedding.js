@@ -1,22 +1,19 @@
 // ============================================================
 //  WEDDING DATA — edit ONLY this file to change all details.
-//  (Placeholder data for now — replace with the real details.)
 // ============================================================
 
 export const wedding = {
   groom: {
     name: 'Salman',
-    fullName: 'Muhammed Salman',
-    parents: 'S/o Abdul Rahman & Fathima',
-    from: 'Malappuram, Kerala',
-    about: 'Engineer by profession, dreamer by heart.',
+    fullName: 'Salmanul Faris VP',
+    parents: 'S/o Sulaiman & Sahira',
+    from: 'Valiyapeediakkal, Vengad Edayur Road',
   },
   bride: {
     name: 'Safa',
-    fullName: 'Safa Nasrin',
-    parents: 'D/o Muhammed Ali & Sajitha',
-    from: 'Kozhikode, Kerala',
-    about: 'Designer with a smile that lights up every room.',
+    fullName: 'Safa Nasri',
+    parents: 'D/o Jaleel AP & Sujeera CP',
+    from: 'Athikkaparambil',
   },
 
   // Shown on the hero / quote section
@@ -29,40 +26,27 @@ export const wedding = {
 
   // Love-story timeline
   story: [
-    { year: '2019', title: 'First Hello', text: 'A chance meeting that felt like destiny.' },
-    { year: '2021', title: 'Best Friends', text: 'Endless talks, shared dreams and laughter.' },
-    { year: '2025', title: 'The Promise', text: 'Both families said Alhamdulillah.' },
-    { year: '2026', title: 'Nikkah', text: 'Beginning forever, with Allah’s blessings.' },
+    { year: '2026', title: 'Nikkah', text: "Beginning forever, with Allah's blessings." },
   ],
 
   // Main event — ISO date/time with timezone (used for the countdown)
   nikkah: {
     title: 'Nikkah Ceremony',
-    dateISO: '2026-12-20T11:00:00+05:30',
-    dateLabel: 'Sunday, 20 December 2026',
+    dateISO: '2026-12-12T11:00:00+05:30',
+    dateLabel: 'Saturday, 12 December 2026',
     timeLabel: '11:00 AM',
-    venue: 'Juma Masjid',
-    address: 'Main Road, Malappuram, Kerala 676505',
+    venue: 'Vengad Melmuri Juma Masjid',
+    address: 'Vengad, Melmuri, Kerala',
     // Google Maps search query or "lat,lng"
-    mapQuery: 'Malappuram Juma Masjid, Kerala',
+    mapQuery: 'Vengad Melmuri Juma Masjid',
+    mapUrl: 'https://maps.app.goo.gl/QGCJaVxkDZM2L6BK7?g_st=iw',
   },
 
   // Other events (optional — empty array hides the section)
-  events: [
-    {
-      title: 'Walima / Reception',
-      dateLabel: 'Sunday, 20 December 2026',
-      timeLabel: '12:30 PM onwards',
-      venue: 'Grand Convention Centre',
-      address: 'Kottakkal Road, Malappuram, Kerala',
-      mapQuery: 'Convention Centre Malappuram',
-    },
-  ],
+  events: [],
 
   // Contact for RSVP / directions
-  contacts: [
-    { label: 'Groom’s Family', name: 'Abdul Rahman', phone: '+919876543210' },
-  ],
+  contacts: [],
 
   hashtag: '#SalmanWedsSafa',
   closing: 'Your presence and duas are the greatest gift to us.',

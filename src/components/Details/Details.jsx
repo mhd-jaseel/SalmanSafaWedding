@@ -308,8 +308,8 @@ function EventCard({ event, featured = false, tone = 'light' }) {
       )}
 
       <div className="d-actions">
-        {q && (
-          <a className="d-btn d-btn--gold" href={directionsUrl(q)} target="_blank" rel="noopener noreferrer">
+        {(event.mapUrl || q) && (
+          <a className="d-btn d-btn--gold" href={event.mapUrl || directionsUrl(q)} target="_blank" rel="noopener noreferrer">
             <IconNav />
             <span>Get Directions</span>
           </a>

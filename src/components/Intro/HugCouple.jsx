@@ -5,7 +5,7 @@
 // resting near his neck.
 // Bridal look: maroon-red lehenga with heavy gold zari border + buta motifs,
 // back-tie blouse with gold latkans, Kerala gold oddiyanam (waist belt), ivory
-// hijab under a simple cream thattam (gold border + red dots).
+// hair under a maroon net dupatta with a gold zari border (Kerala bridal style).
 // viewBox 0 0 156 200, same unit scale as the single characters (120 x 200),
 // feet at y≈196.
 import Groom from './Groom.jsx'
@@ -42,8 +42,8 @@ export default function HugCouple() {
           <stop offset="1" stopColor="#dcc394" />
         </radialGradient>
         <linearGradient id="ih-net" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fbf3e2" />
-          <stop offset="1" stopColor="#e6cfa0" />
+          <stop offset="0" stopColor="#b42a46" />
+          <stop offset="1" stopColor="#82142c" />
         </linearGradient>
         <linearGradient id="ih-sleeve-g" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#fffaf0" />
@@ -168,21 +168,21 @@ export default function HugCouple() {
           <circle cx="84" cy="94" r="1" fill={RED} />
         </g>
 
-        {/* ===== simple cream thattam laid over the head, falling down her back */}
+        {/* ===== maroon dupatta laid over the head, falling down her back */}
         <g transform="rotate(9 64 112)">
           <path
             d="M62 43.6 C39 43.6 31.6 65 34.4 88 C31 108 27 128 24 148 Q62 160 100 148 C97 128 93 108 89.6 88 C92.4 65 85 43.6 62 43.6 Z"
             fill="url(#ih-net)"
           />
           {/* soft folds + sheen */}
-          <path d="M47 98 Q44 124 41 150 M77 98 Q80 124 83 151" fill="none" stroke="#d6bd8b" strokeWidth="1.1" strokeLinecap="round" opacity=".8" />
+          <path d="M47 98 Q44 124 41 150 M77 98 Q80 124 83 151" fill="none" stroke="#5a0a1b" strokeWidth="1.1" strokeLinecap="round" opacity=".55" />
           {/* where the shawl leaves the back of the head */}
-          <path d="M37 90 Q62 106 87 90" fill="none" stroke="#d2b57f" strokeWidth="1.4" strokeLinecap="round" />
-          <path d="M42 96 Q62 108 82 96" fill="none" stroke="#d2b57f" strokeWidth=".9" strokeLinecap="round" opacity=".6" />
-          <path d="M40 66 Q46 50 64 46.6" fill="none" stroke="#fff" strokeOpacity=".6" strokeWidth="2.2" strokeLinecap="round" />
-          {/* gold border + red dots along the hem */}
-          <path d="M25 144.4 Q62 156.4 99 144.4" fill="none" stroke={GOLD} strokeWidth="1.6" strokeLinecap="round" />
-          <path d="M26.4 140.6 Q62 152.4 97.6 140.6" fill="none" stroke={RED} strokeWidth="2" strokeDasharray="0.1 3.8" strokeLinecap="round" opacity=".85" />
+          <path d="M37 90 Q62 106 87 90" fill="none" stroke="#5a0a1b" strokeOpacity=".5" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M42 96 Q62 108 82 96" fill="none" stroke="#5a0a1b" strokeWidth=".9" strokeLinecap="round" opacity=".6" />
+          <path d="M40 66 Q46 50 64 46.6" fill="none" stroke="#fff" strokeOpacity=".25" strokeWidth="2.2" strokeLinecap="round" />
+          {/* gold zari border along the hem */}
+          <path d="M25 144.4 Q62 156.4 99 144.4" fill="none" stroke={GOLD} strokeWidth="2.6" strokeLinecap="round" />
+          <path d="M26.4 140.6 Q62 152.4 97.6 140.6" fill="none" stroke={GOLD_L} strokeWidth="1.2" strokeDasharray="0.1 2.8" strokeLinecap="round" />
         </g>
       </g>
 
