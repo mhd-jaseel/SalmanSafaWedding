@@ -19,6 +19,7 @@ import {
   Rings,
 } from './Ornaments.jsx'
 import { calendarUrl, directionsUrl, mapEmbedUrl, telUrl, waUrl } from './links.js'
+import useAutoScroll from './useAutoScroll.js'
 import './Details.css'
 
 /* ---------------- Motion helpers ---------------- */
@@ -461,7 +462,8 @@ function Closing({ data, groom, bride }) {
 
 /* ---------------- Page ---------------- */
 
-export default function Details({ data }) {
+export default function Details({ data, autoScroll = false }) {
+  useAutoScroll(autoScroll)
   const d = data || {}
   const groom = d.groom || {}
   const bride = d.bride || {}

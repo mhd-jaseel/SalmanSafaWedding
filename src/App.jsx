@@ -117,7 +117,7 @@ export default function App() {
     <>
       {stage !== 'gate' && (
         <Suspense fallback={<Waiting />}>
-          <Details data={wedding} />
+          <Details data={wedding} autoScroll={stage === 'details'} />
         </Suspense>
       )}
 
